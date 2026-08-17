@@ -114,6 +114,12 @@ def test_strands_graph_interrupt_and_resume():
         "apply_decisions",
         "file_deposit",
     }
+    tender_line = next(
+        line for line in second["tape"] if line["tool"] == "classify_tenders"
+    )
+    assert "cash 1240.50" in tender_line["text"]
+    assert "card 3180.20" in tender_line["text"]
+    assert "store-credit 95.00" in tender_line["text"]
 
 
 def test_graph_nodes_carry_their_loaded_skill_contracts():

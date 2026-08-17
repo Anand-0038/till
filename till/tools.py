@@ -31,9 +31,10 @@ def count_drawer() -> dict[str, Any]:
 def classify_tenders() -> dict[str, Any]:
     shop = night()
     rows = [t.to_dict() for t in shop.tenders]
+    summary = "  ".join(f"{row['method']} {float(row['amount']):.2f}" for row in rows)
     _tape(
         "cashier",
-        f"TAPE   {shop.sales_count} sales  cash {shop.expected_cash:.2f}  card {rows[1]['amount']:.2f}",
+        f"TAPE   {shop.sales_count} sales  {summary}",
         tool="classify_tenders",
     )
     return {"sales_count": shop.sales_count, "tenders": rows}
