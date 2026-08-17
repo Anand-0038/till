@@ -1,0 +1,127 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="940" viewBox="0 0 1500 940" role="img" aria-labelledby="title desc">
+  <title id="title">Till architecture: a Strands Agents night-close crew</title>
+  <desc id="desc">A browser night board calls a FastAPI control plane, which runs a Strands GraphBuilder with cashier, auditor, owner gate, and clerk nodes over a synthetic shop fixture. The clerk produces a locked deposit packet only after owner decisions.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#20160f"/>
+      <stop offset="1" stop-color="#0f0b08"/>
+    </linearGradient>
+    <linearGradient id="paper" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f1e6c4"/>
+      <stop offset="1" stop-color="#d7bd83"/>
+    </linearGradient>
+    <linearGradient id="blue" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#d9eff7"/>
+      <stop offset="1" stop-color="#a9cfdd"/>
+    </linearGradient>
+    <linearGradient id="red" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#c83338"/>
+      <stop offset="1" stop-color="#7a1418"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#000" flood-opacity=".45"/>
+    </filter>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#d7bd83"/>
+    </marker>
+    <style>
+      .title { font: 700 38px 'DejaVu Sans', sans-serif; letter-spacing: 3px; fill: #f1e6c4; }
+      .subtitle { font: 400 18px 'DejaVu Sans', sans-serif; fill: #c9b894; }
+      .label { font: 700 20px 'DejaVu Sans', sans-serif; letter-spacing: 1px; fill: #1c140e; }
+      .small { font: 400 16px 'DejaVu Sans', sans-serif; fill: #3f3226; }
+      .tiny { font: 400 14px 'DejaVu Sans', sans-serif; fill: #c9b894; }
+      .code { font: 500 15px 'DejaVu Sans Mono', monospace; fill: #163a52; }
+      .node-code { font: 500 15px 'DejaVu Sans Mono', monospace; fill: #d9eff7; }
+      .node-title { font: 700 18px 'DejaVu Sans', sans-serif; letter-spacing: 1px; fill: #f1e6c4; }
+      .node-copy { font: 400 14px 'DejaVu Sans', sans-serif; fill: #eadcc0; }
+      .section { font: 700 14px 'DejaVu Sans', sans-serif; letter-spacing: 2px; fill: #c9b894; }
+      .line { stroke: #d7bd83; stroke-width: 3; fill: none; marker-end: url(#arrow); }
+      .dash { stroke: #8c7449; stroke-width: 2; stroke-dasharray: 8 8; fill: none; marker-end: url(#arrow); }
+    </style>
+  </defs>
+
+  <rect width="1500" height="940" fill="url(#bg)"/>
+  <rect x="34" y="30" width="1432" height="880" rx="12" fill="none" stroke="#5a4632" stroke-width="2"/>
+
+  <text x="76" y="92" class="title">TILL / NIGHT CLOSE CREW</text>
+  <text x="78" y="126" class="subtitle">A policy-constrained Strands graph that runs the safe work and interrupts only for owner decisions.</text>
+
+  <text x="78" y="184" class="section">OPERATOR SURFACE</text>
+  <rect x="76" y="206" width="270" height="176" rx="10" fill="url(#blue)" filter="url(#shadow)"/>
+  <text x="102" y="246" class="label">Night board</text>
+  <text x="102" y="278" class="small">FastAPI static UI</text>
+  <text x="102" y="307" class="code">POST /api/close</text>
+  <text x="102" y="334" class="code">POST /api/decide</text>
+  <text x="102" y="361" class="small">Tape · Inbox · Packet</text>
+
+  <path d="M346 294 H420" class="line"/>
+  <text x="357" y="274" class="tiny">HTTP / JSON</text>
+
+  <rect x="420" y="164" width="1000" height="540" rx="14" fill="#2c2116" stroke="#8c7449" stroke-width="2"/>
+  <text x="456" y="207" class="section">STRANDS AGENTS SDK / GRAPHBUILDER</text>
+  <text x="456" y="235" class="tiny">Deterministic MultiAgentBase nodes · real BeforeNodeCallEvent interrupt · no model key required</text>
+
+  <rect x="456" y="274" width="205" height="188" rx="10" fill="#443322" stroke="#b0894e" stroke-width="2"/>
+  <text x="482" y="314" class="node-title">CASHIER</text>
+  <text x="482" y="345" class="node-copy">skills/cashier</text>
+  <text x="482" y="372" class="node-code">count_drawer</text>
+  <text x="482" y="399" class="node-code">classify_tenders</text>
+  <text x="482" y="432" class="node-copy">Counts; never decides.</text>
+
+  <rect x="704" y="274" width="205" height="188" rx="10" fill="#443322" stroke="#b0894e" stroke-width="2"/>
+  <text x="730" y="314" class="node-title">AUDITOR</text>
+  <text x="730" y="345" class="node-copy">skills/auditor</text>
+  <text x="730" y="372" class="node-code">audit_exceptions</text>
+  <text x="730" y="405" class="node-copy">Applies policy table.</text>
+  <text x="730" y="432" class="node-copy">Auto or ask.</text>
+
+  <rect x="952" y="274" width="205" height="188" rx="10" fill="url(#red)" stroke="#ee8a82" stroke-width="2"/>
+  <text x="978" y="314" class="node-title">OWNER GATE</text>
+  <text x="978" y="345" class="node-copy">BeforeNodeCallEvent</text>
+  <text x="978" y="376" class="node-code">interrupt</text>
+  <text x="978" y="407" class="node-copy">Decision Inbox</text>
+  <text x="978" y="434" class="node-copy">Every ask must close.</text>
+
+  <rect x="1200" y="274" width="184" height="188" rx="10" fill="#443322" stroke="#b0894e" stroke-width="2"/>
+  <text x="1226" y="314" class="node-title">CLERK</text>
+  <text x="1226" y="345" class="node-copy">skills/clerk</text>
+  <text x="1226" y="380" class="node-code">file_deposit</text>
+  <text x="1226" y="412" class="node-copy">Blocked until</text>
+  <text x="1226" y="435" class="node-copy">inbox is empty.</text>
+
+  <path d="M661 368 H704" class="line"/>
+  <path d="M909 368 H952" class="line"/>
+  <path d="M1157 368 H1200" class="line"/>
+  <text x="664" y="352" class="tiny">next</text>
+  <text x="912" y="352" class="tiny">next</text>
+  <text x="1161" y="352" class="tiny">gate</text>
+
+  <path d="M1054 462 V526 H346 V340" class="dash"/>
+  <text x="620" y="514" class="tiny">interruptResponse returns owner decisions to the graph</text>
+
+  <rect x="456" y="520" width="430" height="134" rx="10" fill="url(#paper)"/>
+  <text x="484" y="558" class="label">Policy source of truth</text>
+  <text x="484" y="590" class="code">till/policy.py</text>
+  <text x="484" y="620" class="small">variance cap · refund cap + receipt</text>
+  <text x="484" y="644" class="small">manager code · no invented cash</text>
+
+  <rect x="920" y="520" width="464" height="134" rx="10" fill="url(#paper)"/>
+  <text x="948" y="558" class="label">Decision contract</text>
+  <text x="948" y="590" class="code">all open cards · one supported action</text>
+  <text x="948" y="620" class="small">invalid / incomplete input → 422, no partial mutation</text>
+
+  <text x="78" y="760" class="section">STATE AND PROOF</text>
+  <rect x="76" y="786" width="410" height="78" rx="10" fill="#2c2116" stroke="#8c7449" stroke-width="2"/>
+  <text x="102" y="818" class="node-title">Synthetic shop fixture</text>
+  <text x="102" y="844" class="node-copy">Tuesday register · 47 sales · one drawer</text>
+  <path d="M486 825 H610" class="line"/>
+
+  <rect x="610" y="786" width="410" height="78" rx="10" fill="#2c2116" stroke="#8c7449" stroke-width="2"/>
+  <text x="636" y="818" class="node-title">Process-local night state</text>
+  <text x="636" y="844" class="node-copy">ShopNight · tape · exceptions · decisions</text>
+  <path d="M1020 825 H1144" class="line"/>
+
+  <rect x="1144" y="786" width="290" height="78" rx="10" fill="url(#paper)"/>
+  <text x="1170" y="818" class="label">Deposit packet</text>
+  <text x="1170" y="844" class="small">DEP-2026-08-11 · LOCKED</text>
+</svg>

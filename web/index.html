@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#18110b" />
+    <meta
+      name="description"
+      content="Till — night register close for Oak & Bit Hardware. Owner stamps the asks. Crew files the rest."
+    />
+    <title>TILL — Oak &amp; Bit Hardware</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Oswald:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <a class="skip" href="#inbox">Skip to Decision Inbox</a>
+
+    <div id="banner" class="banner" hidden>
+      <p id="banner-text"></p>
+      <button type="button" id="btn-retry" class="btn btn-retry">Retry</button>
+    </div>
+
+    <div class="shop">
+      <header class="mast">
+        <div class="mast-mark">
+          <p class="mast-kicker">Night register · Strands crew</p>
+          <h1>TILL</h1>
+        </div>
+        <div class="mast-shop">
+          <p class="shop-name" id="shop-name">Oak &amp; Bit Hardware</p>
+          <p class="shop-meta">One register · After lockup · Graph run</p>
+        </div>
+        <div class="mast-when">
+          <time id="night-date">—</time>
+          <div
+            class="led"
+            id="status-led"
+            data-status="open"
+            role="status"
+            aria-live="polite"
+          >
+            <span class="led-dot" aria-hidden="true"></span>
+            <span id="status-text">OPEN</span>
+          </div>
+        </div>
+        <div class="mast-stamp" id="lock-stamp" hidden aria-hidden="true">
+          LOCKED
+        </div>
+      </header>
+
+      <section class="toolbar" aria-label="Night actions">
+        <button type="button" id="btn-close" class="btn btn-close">
+          Run night close
+        </button>
+        <p class="toolbar-note" id="toolbar-note">
+          Strands crew: cashier counts. Auditor applies policy. You stamp the asks. Clerk files.
+        </p>
+        <button type="button" id="btn-reset" class="btn btn-ghost">
+          Reset night
+        </button>
+      </section>
+
+      <ol class="crew" id="crew" aria-label="Crew timeline">
+        <li data-role="cashier" data-state="wait">
+          <span class="crew-dot" aria-hidden="true"></span>
+          <span class="crew-name">Cashier</span>
+          <span class="crew-job" data-job>Wait</span>
+        </li>
+        <li data-role="auditor" data-state="wait">
+          <span class="crew-dot" aria-hidden="true"></span>
+          <span class="crew-name">Auditor</span>
+          <span class="crew-job" data-job>Wait</span>
+        </li>
+        <li data-role="owner" data-state="wait">
+          <span class="crew-dot" aria-hidden="true"></span>
+          <span class="crew-name">Owner</span>
+          <span class="crew-job" data-job>Wait</span>
+        </li>
+        <li data-role="clerk" data-state="wait">
+          <span class="crew-dot" aria-hidden="true"></span>
+          <span class="crew-name">Clerk</span>
+          <span class="crew-job" data-job>Wait</span>
+        </li>
+      </ol>
+
+      <main class="board">
+        <div class="col-left">
+          <section class="tape-housing" aria-labelledby="tape-heading">
+            <div class="tape-bezel">
+              <h2 id="tape-heading">Register tape</h2>
+              <span class="print-lamp" id="print-lamp" aria-hidden="true"></span>
+            </div>
+            <div class="tape-slot">
+              <div
+                class="tape"
+                id="tape"
+                role="log"
+                aria-live="polite"
+                aria-relevant="additions"
+                aria-label="Register tape"
+              >
+                <header class="tape-cap">
+                  <p>OAK &amp; BIT HARDWARE</p>
+                  <p id="tape-date">NIGHT CLOSE</p>
+                  <p id="tape-meta">1 DRAWER</p>
+                  <p class="tape-rule" aria-hidden="true">
+                    ----------------------------------------
+                  </p>
+                </header>
+                <div id="tape-lines"></div>
+                <p class="tape-empty" id="tape-empty">
+                  No lines. Run night close.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <aside class="policy" aria-labelledby="policy-heading">
+            <div class="policy-clip" aria-hidden="true"></div>
+            <h2 id="policy-heading">Close policy</h2>
+            <p class="policy-note">Laminated. Source of truth. Do not invent cash.</p>
+            <table id="policy-table">
+              <thead>
+                <tr>
+                  <th scope="col">Event</th>
+                  <th scope="col">Auto</th>
+                  <th scope="col">Ask</th>
+                </tr>
+              </thead>
+              <tbody id="policy-body">
+                <tr>
+                  <td data-th="Event">Tender totals match POS</td>
+                  <td data-th="Auto">file</td>
+                  <td data-th="Ask">—</td>
+                </tr>
+                <tr>
+                  <td data-th="Event">Drawer variance ≤ $10</td>
+                  <td data-th="Auto">accept as variance</td>
+                  <td data-th="Ask">—</td>
+                </tr>
+                <tr>
+                  <td data-th="Event">Drawer variance &gt; $10</td>
+                  <td data-th="Auto">—</td>
+                    <td data-th="Ask">accept</td>
+                </tr>
+                <tr>
+                  <td data-th="Event">Refund ≤ $50 with receipt</td>
+                  <td data-th="Auto">post</td>
+                  <td data-th="Ask">—</td>
+                </tr>
+                <tr>
+                  <td data-th="Event">Refund &gt; $50</td>
+                  <td data-th="Auto">—</td>
+                  <td data-th="Ask">approve / deny</td>
+                </tr>
+                <tr>
+                  <td data-th="Event">Void with manager code</td>
+                  <td data-th="Auto">accept</td>
+                  <td data-th="Ask">—</td>
+                </tr>
+                <tr>
+                  <td data-th="Event">Void without manager code</td>
+                  <td data-th="Auto">—</td>
+                  <td data-th="Ask">accept / reverse</td>
+                </tr>
+                <tr>
+                  <td data-th="Event">No-sale after 21:00</td>
+                  <td data-th="Auto">note on packet</td>
+                  <td data-th="Ask">—</td>
+                </tr>
+              </tbody>
+            </table>
+          </aside>
+        </div>
+
+        <section class="inbox" id="inbox" aria-labelledby="inbox-heading">
+          <header class="inbox-head">
+            <div>
+              <h2 id="inbox-heading">Decision Inbox</h2>
+              <p class="inbox-sub">Owner only. Safe work already filed.</p>
+            </div>
+            <p class="inbox-count" id="inbox-count">0 open</p>
+          </header>
+          <div id="cards" class="cards"></div>
+          <div class="inbox-foot">
+            <p class="inbox-hint" id="inbox-hint">
+              Nothing to stamp until the crew hits an ask.
+            </p>
+            <button type="button" id="btn-decide" class="btn btn-stamp" disabled>
+              Stamp decisions
+            </button>
+          </div>
+        </section>
+      </main>
+
+      <footer class="packet" id="packet" aria-labelledby="packet-heading">
+        <div class="packet-string" aria-hidden="true"></div>
+        <div class="packet-inner">
+          <div class="packet-top">
+            <p class="packet-kicker">Night deposit</p>
+            <h2 id="packet-heading">Deposit packet</h2>
+            <p class="packet-id" id="packet-id">Not made</p>
+          </div>
+          <dl class="packet-grid" id="packet-grid"></dl>
+          <ul class="packet-notes" id="packet-notes"></ul>
+          <p class="packet-band" id="packet-band">Held in the tray</p>
+        </div>
+      </footer>
+    </div>
+
+    <noscript>
+      <p class="banner">Till needs JavaScript to read the night board and stamp asks.</p>
+    </noscript>
+    <script src="app.js"></script>
+  </body>
+</html>
