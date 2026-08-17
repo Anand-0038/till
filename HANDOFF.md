@@ -28,6 +28,7 @@ Open http://127.0.0.1:8000
 1. **Run night close**
 2. Stamp **VAR-TILL** → accept, **REF-4412** → approve
 3. Packet **DEP-2026-08-11** files, cash drop **1228.00**, night **LOCKED**
+4. Click **Export audit** to download the local JSON close record.
 
 ```bash
 pytest tests/test_close.py tests/test_http.py tests/test_skills.py -q
@@ -78,7 +79,7 @@ Policy lives only in `till/policy.py`.
 
 ## Last verified
 
-12 tests passed (`test_close`, `test_http`, `test_skills`). The graph interrupt is named
+15 tests passed (`test_close`, `test_http`, `test_skills`). The graph interrupt is named
 `owner-gate`; the tape records each role's tool. HTTP close then decide locks
 `DEP-2026-08-11` / `1228.00`. Invalid or incomplete decisions return `422` without partial
 owner mutation.

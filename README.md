@@ -32,7 +32,7 @@ No AWS or model key is required for the judge path. The graph is real Strands
 (`GraphBuilder`, `MultiAgentBase`, `BeforeNodeCallEvent`, interrupt/resume).
 
 ```bash
-pytest tests/test_close.py -q
+pytest -q
 ```
 
 ## Why this crew

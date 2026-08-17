@@ -123,3 +123,24 @@ def test_http_rejects_incomplete_decisions_without_partial_owner_tape():
     assert "REF-4412" in response.json()["detail"]
     snapshot = client.get("/api/night").json()
     assert not any(line["agent"] == "owner" for line in snapshot["tape"])
+
+
+def test_http_rejects_decisions_outside_the_owner_interrupt():
+    client = TestClient(app, raise_server_exceptions=False)
+    client.post("/api/reset")
+    decisions = {
+        "decisions": [
+            {"id": "VAR-TILL", "action": "accept"},
+            {"id": "REF-4412", "action": "approve"},
+        ]
+    }
+
+    before_close = client.post("/api/decide", json=decisions)
+    assert before_close.status_code == 409
+    assert "no close in progress" in before_close.json()["detail"]
+
+    _, decided = _close_then_decide(client)
+    assert decided["status"] == "locked"
+    after_lock = client.post("/api/decide", json=decisions)
+    assert after_lock.status_code == 409
+    assert "not waiting" in after_lock.json()["detail"]

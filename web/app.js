@@ -475,10 +475,11 @@
   function crewStates(night) {
     const open = night.cards.filter(cardOpen);
     const decided = night.cards.some((c) => !cardOpen(c) || c.decision);
+    const packetStatus = str(night.packet?.status).toLowerCase();
     const packetFiled =
       night.status === "locked" ||
-      /filed|lock/.test(night.packet.status.toLowerCase()) ||
-      (night.status === "locked" && night.packet.id);
+      /filed|lock/.test(packetStatus) ||
+      (night.status === "locked" && night.packet?.id);
 
     const cashierDone = tapeHas(night, "cashier") || night.drawer.counted != null || night.drawer.variance != null;
     const auditorDone =

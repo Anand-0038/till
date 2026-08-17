@@ -7,7 +7,7 @@ Local demo is built and tested. Submission kit for Devpost is not.
 - Product: Till, Professional track, Oak & Bit night close
 - Spec, policy table, four role skills
 - Strands `GraphBuilder` + `BeforeNodeCallEvent` interrupt/resume
-- FastAPI: `/health`, `/api/night`, `/api/close`, `/api/decide`, `/api/reset`, static board at `/`
+- FastAPI: `/health`, `/api/night`, `/api/export`, `/api/close`, `/api/decide`, `/api/reset`, static board at `/`
 - Locked close can be exported through `/api/export` or the board's **Export audit** control as a
   local JSON artifact; export is rejected before the packet is locked
 - Board: Run night close, Decision Inbox, register tape, deposit packet. Not a chat home.
@@ -21,7 +21,7 @@ Local demo is built and tested. Submission kit for Devpost is not.
 ## Last test run
 
 ```
-12 passed
+15 passed
 ```
 
 Graph close pauses on `VAR-TILL` + `REF-4412`, packet is null. Decide accept + approve locks `DEP-2026-08-11` with cash-to-drop `1228.00`.

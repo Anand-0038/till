@@ -31,6 +31,20 @@ def test_cannot_file_with_open_asks():
     assert night().status != "locked"
 
 
+def test_cannot_file_before_audit_marks_pending_asks():
+    reset()
+    count_drawer()
+
+    try:
+        file_deposit()
+        raise AssertionError("deposit must wait for the auditor")
+    except RuntimeError as exc:
+        assert "auditor" in str(exc)
+
+    assert night().packet is None
+    assert night().status != "locked"
+
+
 def test_deposit_after_owner_stamps():
     reset()
     count_drawer()
@@ -44,6 +58,12 @@ def test_deposit_after_owner_stamps():
     packet = file_deposit()
     assert packet["id"] == "DEP-2026-08-11"
     assert packet["cash_to_drop"] == 1228.00
+    assert packet["lines"][2:] == [
+        "variance   -12.50  accept",
+        "refunds    REF-4412 approve",
+        "voids      VOID-19 auto (manager code)",
+        "notes      NS-7 no-sale after 21:00",
+    ]
     assert night().status == "locked"
 
 

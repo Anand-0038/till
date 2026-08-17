@@ -2,7 +2,8 @@ from __future__ import annotations
 
 from typing import Any
 
-from till.domain import Packet, TapeLine, money
+from till.domain import ExceptionItem, Packet, TapeLine, money
+from till.policy import NO_SALE_NOTE_AFTER, minutes_from_hhmm
 from till.store import night
 
 
@@ -130,10 +131,17 @@ def apply_decisions(decisions: list[dict[str, str]]) -> dict[str, Any]:
 
 def file_deposit() -> dict[str, Any]:
     shop = night()
-    if shop.open_asks():
-        raise RuntimeError("cannot file deposit while ask cards are open")
     if shop.counted_cash is None:
         raise RuntimeError("cannot file deposit before the drawer is counted")
+    if any(item.status == "pending" for item in shop.exceptions):
+        raise RuntimeError("cannot file deposit before the auditor completes")
+    unresolved_asks = [
+        item
+        for item in shop.exceptions
+        if item.lane == "ask" and item.status != "decided"
+    ]
+    if unresolved_asks:
+        raise RuntimeError("cannot file deposit while ask cards are unresolved")
     packet_id = f"DEP-{shop.date}"
     decision_rows = [
         {"id": item.id, "action": item.decision or item.status}
@@ -143,11 +151,8 @@ def file_deposit() -> dict[str, Any]:
     lines = [
         f"{shop.shop}  {shop.date}  {shop.register}",
         f"cash drop  {shop.counted_cash:.2f}",
-        f"variance   {shop.variance:.2f}  {next(i.decision for i in shop.exceptions if i.id == 'VAR-TILL')}",
-        f"refunds    REF-4412 {next(i.decision for i in shop.exceptions if i.id == 'REF-4412')}",
-        "voids      VOID-19 auto (manager code)",
-        "notes      NS-7 no-sale after 21:00",
     ]
+    lines.extend(_packet_line(item) for item in shop.exceptions)
     shop.packet = Packet(
         id=packet_id,
         cash_to_drop=shop.counted_cash,
@@ -161,3 +166,21 @@ def file_deposit() -> dict[str, Any]:
         tool="file_deposit",
     )
     return shop.packet.to_dict()
+
+
+def _packet_line(item: ExceptionItem) -> str:
+    resolution = item.decision or item.status
+    if item.kind == "variance":
+        return f"variance   {item.amount:.2f}  {resolution}"
+    if item.kind == "refund":
+        return f"refunds    {item.id} {resolution}"
+    if item.kind == "void":
+        manager_note = " (manager code)" if item.manager_code else ""
+        return f"voids      {item.id} {resolution}{manager_note}"
+    if item.kind == "no-sale":
+        threshold = f"{NO_SALE_NOTE_AFTER // 60:02d}:{NO_SALE_NOTE_AFTER % 60:02d}"
+        if item.time_hhmm and minutes_from_hhmm(item.time_hhmm) >= NO_SALE_NOTE_AFTER:
+            return f"notes      {item.id} no-sale after {threshold}"
+        when = f" at {item.time_hhmm}" if item.time_hhmm else ""
+        return f"notes      {item.id} no-sale{when}"
+    return f"notes      {item.id} {item.reason} ({resolution})"
