@@ -21,11 +21,14 @@ def _payload(result) -> dict[str, Any]:
         shop["run"] = {
             "status": "interrupted",
             "interrupts": [
-                {"id": item.id, "name": item.name, "reason": item.reason} for item in result.interrupts
+                {"id": item.id, "name": item.name, "reason": item.reason}
+                for item in result.interrupts
             ],
         }
         return shop
-    status = result.status.value if hasattr(result.status, "value") else str(result.status)
+    status = (
+        result.status.value if hasattr(result.status, "value") else str(result.status)
+    )
     shop["run"] = {"status": status}
     return shop
 

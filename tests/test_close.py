@@ -1,4 +1,7 @@
+import asyncio
+
 from till.engine import reset_night, resume_close, start_close
+from till.nodes import AuditorNode, CashierNode, ClerkNode
 from till.policy import classify_exception
 from till.store import night, reset
 from till.tools import apply_decisions, audit_exceptions, count_drawer, file_deposit
@@ -70,6 +73,7 @@ def test_strands_graph_interrupt_and_resume():
     first = start_close()
     assert first["run"]["status"] == "interrupted"
     assert {item["name"] for item in first["run"]["interrupts"]} == {"owner-gate"}
+    assert first["run"]["interrupts"][0]["reason"]["role"] == "name: owner-gate"
     assert {card["id"] for card in first["open_asks"]} == {"VAR-TILL", "REF-4412"}
     assert first["packet"] is None
     assert first["status"] == "waiting"
@@ -90,3 +94,21 @@ def test_strands_graph_interrupt_and_resume():
         "apply_decisions",
         "file_deposit",
     }
+
+
+def test_graph_nodes_carry_their_loaded_skill_contracts():
+    reset()
+
+    cashier = asyncio.run(CashierNode().invoke_async("close", {}))
+    auditor = asyncio.run(AuditorNode().invoke_async("close", {}))
+    apply_decisions(
+        [
+            {"id": "VAR-TILL", "action": "accept"},
+            {"id": "REF-4412", "action": "approve"},
+        ]
+    )
+    clerk = asyncio.run(ClerkNode().invoke_async("close", {}))
+
+    for role, result in (("cashier", cashier), ("auditor", auditor), ("clerk", clerk)):
+        state = result.results[role].result.state
+        assert state["skill"].startswith("---\nname: " + role)

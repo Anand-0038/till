@@ -6,7 +6,11 @@ NO_SALE_NOTE_AFTER = 21 * 60
 
 POLICY_TABLE = [
     {"event": "Tender totals match POS", "auto": "file", "ask": "—"},
-    {"event": f"Drawer variance ≤ ${VARIANCE_CAP:g}", "auto": "accept as variance", "ask": "—"},
+    {
+        "event": f"Drawer variance ≤ ${VARIANCE_CAP:g}",
+        "auto": "accept as variance",
+        "ask": "—",
+    },
     {"event": f"Drawer variance > ${VARIANCE_CAP:g}", "auto": "—", "ask": "accept"},
     {"event": f"Refund ≤ ${REFUND_CAP:g} with receipt", "auto": "post", "ask": "—"},
     {"event": f"Refund > ${REFUND_CAP:g}", "auto": "—", "ask": "approve / deny"},

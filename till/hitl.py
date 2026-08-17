@@ -4,6 +4,7 @@ from typing import Any
 
 from strands.hooks import BeforeNodeCallEvent, HookProvider, HookRegistry
 
+from till.nodes import load_skill
 from till.store import night
 from till.tools import apply_decisions
 
@@ -35,7 +36,10 @@ class OwnerGate(HookProvider):
     def gate(self, event: BeforeNodeCallEvent) -> None:
         if event.node_id != "clerk":
             return
+        role_contract = load_skill("owner-gate").splitlines()[1]
         while night().open_asks():
             cards = [item.to_dict() for item in night().open_asks()]
-            response = event.interrupt("owner-gate", reason={"cards": cards})
+            response = event.interrupt(
+                "owner-gate", reason={"role": role_contract, "cards": cards}
+            )
             apply_decisions(_as_decisions(response))

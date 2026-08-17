@@ -78,7 +78,11 @@ class ShopNight:
     status: NightStatus = "open"
 
     def open_asks(self) -> list[ExceptionItem]:
-        return [item for item in self.exceptions if item.lane == "ask" and item.status == "open"]
+        return [
+            item
+            for item in self.exceptions
+            if item.lane == "ask" and item.status == "open"
+        ]
 
     def to_dict(self) -> dict[str, Any]:
         from till.policy import POLICY_TABLE

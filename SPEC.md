@@ -49,4 +49,4 @@ Seeded Tuesday. 47 sales. One $89 refund. Drawer short $12.50. One late no-sale.
 
 ## Stack
 
-Strands `GraphBuilder` + `BeforeNodeCallEvent` interrupt. Each role is a node whose system prompt is `skills/<role>/SKILL.md`. Tools mutate a fixture shop. FastAPI + one static UI. The deterministic local path needs no model provider or cloud key; optional narration is outside the close decision path.
+Strands `GraphBuilder` + `BeforeNodeCallEvent` interrupt. Each role is a node that loads its job contract from `skills/<role>/SKILL.md`. Tools mutate a fixture shop. FastAPI + one static UI. The deterministic local path needs no model provider or cloud key; optional narration is outside the close decision path.

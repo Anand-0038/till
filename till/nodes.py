@@ -24,7 +24,11 @@ def _result(name: str, text: str, payload: dict) -> MultiAgentResult:
     )
     return MultiAgentResult(
         status=Status.COMPLETED,
-        results={name: NodeResult(result=agent_result, execution_time=1, status=Status.COMPLETED)},
+        results={
+            name: NodeResult(
+                result=agent_result, execution_time=1, status=Status.COMPLETED
+            )
+        },
         execution_count=1,
         execution_time=1,
     )
@@ -36,10 +40,13 @@ class CashierNode(MultiAgentBase):
         self.name = "cashier"
 
     async def invoke_async(self, task, invocation_state, **kwargs):
+        skill = load_skill("cashier")
         count = tools.count_drawer()
         tenders = tools.classify_tenders()
-        text = f"{load_skill('cashier').splitlines()[1]}\ncounted {count['counted_cash']:.2f} variance {count['variance']:.2f}"
-        return _result(self.name, text, {"count": count, "tenders": tenders})
+        text = f"{skill.splitlines()[1]}\ncounted {count['counted_cash']:.2f} variance {count['variance']:.2f}"
+        return _result(
+            self.name, text, {"skill": skill, "count": count, "tenders": tenders}
+        )
 
 
 class AuditorNode(MultiAgentBase):
@@ -48,9 +55,10 @@ class AuditorNode(MultiAgentBase):
         self.name = "auditor"
 
     async def invoke_async(self, task, invocation_state, **kwargs):
+        skill = load_skill("auditor")
         audit = tools.audit_exceptions()
-        text = f"auto {len(audit['auto'])}  ask {len(audit['ask'])}"
-        return _result(self.name, text, audit)
+        text = f"{skill.splitlines()[1]}\nauto {len(audit['auto'])}  ask {len(audit['ask'])}"
+        return _result(self.name, text, {"skill": skill, **audit})
 
 
 class ClerkNode(MultiAgentBase):
@@ -59,5 +67,10 @@ class ClerkNode(MultiAgentBase):
         self.name = "clerk"
 
     async def invoke_async(self, task, invocation_state, **kwargs):
+        skill = load_skill("clerk")
         packet = tools.file_deposit()
-        return _result(self.name, f"filed {packet['id']}", packet)
+        return _result(
+            self.name,
+            f"{skill.splitlines()[1]}\nfiled {packet['id']}",
+            {"skill": skill, **packet},
+        )

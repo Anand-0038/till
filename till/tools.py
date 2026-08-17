@@ -46,7 +46,11 @@ def audit_exceptions() -> dict[str, Any]:
         if item.lane == "auto":
             item.status = "auto"
             auto.append(item.to_dict())
-            _tape("auditor", f"AUTO   {item.id}  {item.kind}  {item.amount:.2f}", tool="audit_exceptions")
+            _tape(
+                "auditor",
+                f"AUTO   {item.id}  {item.kind}  {item.amount:.2f}",
+                tool="audit_exceptions",
+            )
         else:
             item.status = "open"
             ask.append(item.to_dict())
@@ -106,7 +110,9 @@ def _validated_decisions(decisions: list[dict[str, str]]) -> list[tuple[Any, str
 
     missing = sorted(set(open_by_id) - seen)
     if missing:
-        raise ValueError(f"decide every open ask before filing; missing {', '.join(missing)}")
+        raise ValueError(
+            f"decide every open ask before filing; missing {', '.join(missing)}"
+        )
     return normalized
 
 
@@ -149,5 +155,9 @@ def file_deposit() -> dict[str, Any]:
         decisions=decision_rows,
     )
     shop.status = "locked"
-    _tape("clerk", f"FILE   {packet_id}  drop {shop.counted_cash:.2f}  LOCKED", tool="file_deposit")
+    _tape(
+        "clerk",
+        f"FILE   {packet_id}  drop {shop.counted_cash:.2f}  LOCKED",
+        tool="file_deposit",
+    )
     return shop.packet.to_dict()
