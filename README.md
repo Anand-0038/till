@@ -26,6 +26,7 @@ Open http://127.0.0.1:8000
 2. Tape prints cashier + auditor lines. Two cards: `$12.50` short, `$89` refund.
 3. Accept the variance. Approve the refund.
 4. Packet `DEP-2026-08-11` files. Night stamps **LOCKED**.
+5. Click **Export audit** to save the locked close as a local JSON record. It never uploads.
 
 No AWS or model key is required for the judge path. The graph is real Strands
 (`GraphBuilder`, `MultiAgentBase`, `BeforeNodeCallEvent`, interrupt/resume).
@@ -74,8 +75,9 @@ same graph resumes and files `DEP-2026-08-11`.
 The seeded Tuesday is synthetic and runs in one process. Till does not connect to a real POS,
 move real money, or claim a hosted deployment. The code proves the complete policy and human-
 decision flow locally; live POS integration, multi-user persistence, model narration, and
-AgentCore deployment are separate follow-up paths. The scenario does not claim measured customer
-time savings or user-study results.
+AgentCore deployment are separate follow-up paths. The audit export is a local download from the
+same process, not durable cloud storage. The scenario does not claim measured customer time
+savings or user-study results.
 
 ## Restart later
 

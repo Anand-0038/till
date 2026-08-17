@@ -55,6 +55,22 @@ def resume_close(decisions: list[dict[str, str]]) -> dict[str, Any]:
     return _payload(_last_result)
 
 
+def export_close() -> dict[str, Any]:
+    if _last_result is None:
+        raise RuntimeError("no close in progress")
+    if (
+        _last_result.status != Status.COMPLETED
+        or night().status != "locked"
+        or night().packet is None
+    ):
+        raise RuntimeError("export is available after the deposit packet is locked")
+    return {
+        "format": "till-close-v1",
+        "boundary": "local-process",
+        "night": _payload(_last_result),
+    }
+
+
 def reset_night() -> dict[str, Any]:
     global _graph, _last_result
     _graph = None

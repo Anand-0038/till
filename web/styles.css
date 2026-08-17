@@ -885,6 +885,41 @@ button:disabled {
   padding: 0.95rem 1.1rem 1rem 1.6rem;
 }
 
+.packet-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: flex-end;
+}
+
+.packet-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.55rem;
+}
+
+.packet-export-note {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 0.75rem;
+}
+
+.btn-export {
+  min-height: 38px;
+  padding: 0.4rem 0.7rem;
+  background: rgba(255, 248, 225, 0.6);
+  color: var(--ink);
+  border-color: #8a6a36;
+  font-size: 0.78rem;
+}
+
+.btn-export:hover:not(:disabled) {
+  background: #fff8e1;
+  border-color: var(--stamp-deep);
+}
+
 .packet-kicker {
   font-size: 0.7rem;
   font-weight: 600;
@@ -1026,8 +1061,18 @@ button:disabled {
 
   .btn-close,
   .btn-ghost,
-  .btn-stamp {
+  .btn-stamp,
+  .btn-export {
     width: 100%;
+  }
+
+  .packet-top {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .packet-tools {
+    justify-content: flex-start;
   }
 
   .policy thead {

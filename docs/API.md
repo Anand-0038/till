@@ -8,6 +8,7 @@ App: `till.main:app`
 | GET | `/health` | `{"ok":"till"}` |
 | GET | `/` | Night board (`web/index.html`) |
 | GET | `/api/night` | Current `ShopNight.to_dict()` |
+| GET | `/api/export` | Download the locked close as a local JSON audit artifact |
 | POST | `/api/close` | **Resets** the seeded Tuesday, runs the graph until interrupt or lock |
 | POST | `/api/decide` | Resume the open interrupt. Body below. |
 | POST | `/api/reset` | Clear graph + restore fixture. Night is `open`. |
@@ -24,6 +25,19 @@ App: `till.main:app`
 ```
 
 409 if no close is in progress or the night is not waiting.
+
+`GET /api/export` returns `409` until the packet is locked. After a successful close it returns
+`application/json` with `Content-Disposition: attachment` and this envelope:
+
+```json
+{
+  "format": "till-close-v1",
+  "boundary": "local-process",
+  "night": {"status": "locked", "packet": {"id": "DEP-2026-08-11"}}
+}
+```
+
+The file is a local audit copy. Till does not persist or upload it.
 
 The request must include exactly one supported decision for every open ask card. The current
 seeded flow supports `VAR-TILL: accept` and `REF-4412: approve | deny`. Unknown cards, duplicate

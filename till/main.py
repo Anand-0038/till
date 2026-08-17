@@ -1,10 +1,11 @@
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException
+from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
-from till.engine import reset_night, resume_close, snapshot, start_close
+from till.engine import export_close, reset_night, resume_close, snapshot, start_close
 
 WEB = Path(__file__).resolve().parents[1] / "web"
 
@@ -28,6 +29,21 @@ def health() -> dict[str, str]:
 @app.get("/api/night")
 def api_night() -> dict:
     return snapshot()
+
+
+@app.get("/api/export")
+def api_export() -> JSONResponse:
+    try:
+        artifact = export_close()
+    except RuntimeError as exc:
+        raise HTTPException(status_code=409, detail=str(exc)) from exc
+    packet_id = artifact["night"]["packet"]["id"]
+    return JSONResponse(
+        content=artifact,
+        headers={
+            "Content-Disposition": f'attachment; filename="till-{packet_id}.json"'
+        },
+    )
 
 
 @app.post("/api/close")

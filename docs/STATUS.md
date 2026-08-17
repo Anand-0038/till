@@ -8,6 +8,8 @@ Local demo is built and tested. Submission kit for Devpost is not.
 - Spec, policy table, four role skills
 - Strands `GraphBuilder` + `BeforeNodeCallEvent` interrupt/resume
 - FastAPI: `/health`, `/api/night`, `/api/close`, `/api/decide`, `/api/reset`, static board at `/`
+- Locked close can be exported through `/api/export` or the board's **Export audit** control as a
+  local JSON artifact; export is rejected before the packet is locked
 - Board: Run night close, Decision Inbox, register tape, deposit packet. Not a chat home.
 - Judge assets: rendered architecture diagram, waiting-state screenshot, locked-state screenshot,
   and originality/attribution note

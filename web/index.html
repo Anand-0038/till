@@ -203,9 +203,17 @@
         <div class="packet-string" aria-hidden="true"></div>
         <div class="packet-inner">
           <div class="packet-top">
-            <p class="packet-kicker">Night deposit</p>
-            <h2 id="packet-heading">Deposit packet</h2>
-            <p class="packet-id" id="packet-id">Not made</p>
+            <div>
+              <p class="packet-kicker">Night deposit</p>
+              <h2 id="packet-heading">Deposit packet</h2>
+              <p class="packet-id" id="packet-id">Not made</p>
+            </div>
+            <div class="packet-tools">
+              <p class="packet-export-note" id="packet-export-note">Available after lock</p>
+              <button type="button" id="btn-export" class="btn btn-export" disabled>
+                Export audit
+              </button>
+            </div>
           </div>
           <dl class="packet-grid" id="packet-grid"></dl>
           <ul class="packet-notes" id="packet-notes"></ul>

@@ -39,6 +39,9 @@ Packet **DEP-2026-08-11**. Cash drop **1228.00**. Night **LOCKED**. Clerk only r
 
 One slide: cashier → auditor → owner-gate interrupt → clerk. Strands graph. Policy in one file. Skills are the jobs.
 
+After showing the locked packet, click **Export audit** once. The browser saves a local JSON
+copy of the packet and close trace; say explicitly that it is a local download, not cloud storage.
+
 ## 4:50–5:00 — Close
 
 “Dana opened Till twice. The crew closed the store.”

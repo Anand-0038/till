@@ -45,6 +45,7 @@ Seeded Tuesday. 47 sales. One $89 refund. Drawer short $12.50. One late no-sale.
 - Crew timeline
 - Decision Inbox
 - Deposit packet (the artifact)
+- Local audit export (only after the packet locks)
 - Policy table
 
 ## Stack

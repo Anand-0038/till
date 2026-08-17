@@ -1,7 +1,8 @@
 /**
  * Till night board.
  *
- * Night state accepted from GET /api/night (also POST /api/close and /api/decide):
+ * Night state accepted from GET /api/night (also POST /api/close and /api/decide).
+ * GET /api/export returns the locked local audit envelope:
  * {
  *   shop, date, weekday, status,
  *   sales,
@@ -13,6 +14,7 @@
  *   audit: [{ agent, tool, decision, detail }],
  *   policy: [{ event, auto, ask }]
  * }
+ * { format: "till-close-v1", boundary: "local-process", night: { ... } }
  */
 (() => {
   "use strict";
@@ -33,6 +35,7 @@
     close: $("#btn-close"),
     reset: $("#btn-reset"),
     decide: $("#btn-decide"),
+    export: $("#btn-export"),
     note: $("#toolbar-note"),
     crew: $("#crew"),
     lamp: $("#print-lamp"),
@@ -47,6 +50,7 @@
     packetGrid: $("#packet-grid"),
     packetNotes: $("#packet-notes"),
     packetBand: $("#packet-band"),
+    packetExportNote: $("#packet-export-note"),
     policyBody: $("#policy-body"),
   };
 
@@ -398,6 +402,7 @@
     ui.close.disabled = busy || closeBlocked();
     ui.reset.disabled = busy;
     ui.decide.disabled = busy || !canStamp();
+    ui.export.disabled = busy || state.night.status !== "locked";
     if (busy) {
       ui.close.setAttribute("aria-busy", "true");
       if (label) ui.note.textContent = label;
@@ -696,6 +701,8 @@
   function renderPacket(night) {
     const locked = night.status === "locked";
     const open = night.cards.filter(cardOpen).length;
+    ui.export.disabled = state.busy || !locked;
+    ui.packetExportNote.textContent = locked ? "Local JSON copy" : "Available after lock";
     const pid =
       night.packet.id ||
       (locked ? "DEP-2026-08-11" : "");
@@ -908,9 +915,38 @@
     }
   }
 
+  async function exportAudit() {
+    if (state.busy || state.night.status !== "locked") return;
+    clearError();
+    ui.export.disabled = true;
+    ui.export.setAttribute("aria-busy", "true");
+    ui.packetExportNote.textContent = "Preparing local copy…";
+    try {
+      const data = await api("/api/export");
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+      const href = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      const packetId = data?.night?.packet?.id || "close";
+      link.href = href;
+      link.download = `till-${packetId}.json`;
+      document.body.append(link);
+      link.click();
+      link.remove();
+      window.setTimeout(() => URL.revokeObjectURL(href), 0);
+      ui.packetExportNote.textContent = "Saved locally. No cloud upload.";
+    } catch (err) {
+      showError(err.message, exportAudit);
+      ui.packetExportNote.textContent = "Export failed. Retry when ready.";
+    } finally {
+      ui.export.removeAttribute("aria-busy");
+      ui.export.disabled = state.night.status !== "locked";
+    }
+  }
+
   ui.close.addEventListener("click", runClose);
   ui.reset.addEventListener("click", resetNight);
   ui.decide.addEventListener("click", stampDecisions);
+  ui.export.addEventListener("click", exportAudit);
   ui.retry.addEventListener("click", () => {
     clearError();
     state.retry();
