@@ -132,6 +132,8 @@ def apply_decisions(decisions: list[dict[str, str]]) -> dict[str, Any]:
 
 def file_deposit() -> dict[str, Any]:
     shop = night()
+    if shop.packet is not None or shop.status == "locked":
+        raise RuntimeError("deposit already filed")
     if shop.counted_cash is None:
         raise RuntimeError("cannot file deposit before the drawer is counted")
     if any(item.status == "pending" for item in shop.exceptions):

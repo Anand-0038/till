@@ -1,5 +1,7 @@
 import asyncio
 
+import pytest
+
 from till.engine import reset_night, resume_close, start_close
 from till.nodes import AuditorNode, CashierNode, ClerkNode
 from till.policy import classify_exception
@@ -64,6 +66,27 @@ def test_deposit_after_owner_stamps():
         "voids      VOID-19 auto (manager code)",
         "notes      NS-7 no-sale after 21:00",
     ]
+    assert night().status == "locked"
+
+
+def test_cannot_file_deposit_twice():
+    reset()
+    count_drawer()
+    audit_exceptions()
+    apply_decisions(
+        [
+            {"id": "VAR-TILL", "action": "accept"},
+            {"id": "REF-4412", "action": "approve"},
+        ]
+    )
+    file_deposit()
+    tape_length = len(night().tape)
+
+    with pytest.raises(RuntimeError, match="deposit already filed"):
+        file_deposit()
+
+    assert len(night().tape) == tape_length
+    assert night().packet is not None
     assert night().status == "locked"
 
 
