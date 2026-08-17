@@ -44,7 +44,6 @@ No AWS or OpenAI key required.
 | [SPEC.md](SPEC.md) | Product spec. Do not drift. |
 | [LICENSE](LICENSE) | Apache-2.0 (required) |
 | [HACKATHON.md](HACKATHON.md) | Devpost overview, prizes, criteria |
-| [RESOURCES.md](RESOURCES.md) | Setup, learning, track inspiration |
 | [Agents for Humans Devpost](https://agentsforhumans.devpost.com/) | Official event page and rules |
 | [docs/STATUS.md](docs/STATUS.md) | What works, what is left to win |
 | [docs/DEMO.md](docs/DEMO.md) | 5-minute video / live-judge script |
