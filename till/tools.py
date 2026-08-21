@@ -11,6 +11,26 @@ def _tape(agent: str, text: str, *, tool: str) -> None:
     night().tape.append(TapeLine(agent=agent, text=text, tool=tool))
 
 
+def record_model_tool_call() -> None:
+    """Record the read-only tool call made by the optional Strands reviewer."""
+
+    _tape(
+        "auditor",
+        "MODEL TOOL   read_close_state  read-only observed facts",
+        tool="read_close_state",
+    )
+
+
+def record_model_review(text: str, *, fallback: bool = False) -> None:
+    """Record a bounded model explanation without making it policy state."""
+
+    _tape(
+        "auditor",
+        text[:1000],
+        tool="model_review_fallback" if fallback else "model_review",
+    )
+
+
 def count_drawer() -> dict[str, Any]:
     shop = night()
     shop.counted_cash = money(1228.00)

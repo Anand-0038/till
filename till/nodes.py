@@ -7,6 +7,7 @@ from strands.multiagent.base import MultiAgentBase, MultiAgentResult, NodeResult
 from strands.types.content import ContentBlock, Message
 
 from till import tools
+from till.model_review import FALLBACK_MESSAGE, run_model_review
 
 SKILLS = Path(__file__).resolve().parents[1] / "skills"
 
@@ -56,8 +57,19 @@ class AuditorNode(MultiAgentBase):
 
     async def invoke_async(self, task, invocation_state, **kwargs):
         skill = load_skill("auditor")
+        model_review = run_model_review()
+        if model_review:
+            tools.record_model_review(
+                model_review, fallback=model_review == FALLBACK_MESSAGE
+            )
         audit = tools.audit_exceptions()
         text = f"{skill.splitlines()[1]}\nauto {len(audit['auto'])}  ask {len(audit['ask'])}"
+        if model_review:
+            text += (
+                "\nmodel review unavailable; deterministic fallback"
+                if model_review == FALLBACK_MESSAGE
+                else "\nmodel review completed"
+            )
         return _result(self.name, text, {"skill": skill, **audit})
 
 

@@ -28,8 +28,12 @@ Rendered diagram: [architecture.png](architecture.png). The SVG source is
 - **BeforeNodeCallEvent** — interrupt in front of clerk when any `ask` card is open.
 - **Skills** — `skills/<role>/SKILL.md` is the job description for that node.
 - **Policy** — `till/policy.py` is the only table that decides auto vs ask.
-- **Deterministic local path** — nodes are `MultiAgentBase` and call tools. No Bedrock or model
-  key is required, and no model is allowed to decide cash policy.
+- **Model-backed review path** — when `TILL_GEMINI_API_KEY` is configured, the auditor invokes a
+  real Strands `Agent` through Gemini's OpenAI-compatible endpoint. It calls the read-only
+  `read_close_state` tool and records a bounded owner-review summary in the tape. Provider
+  failure falls back to the deterministic path.
+- **Deterministic policy boundary** — nodes are `MultiAgentBase` and call tools. No model is
+  allowed to decide cash policy, approve an owner action, or file the packet.
 - **UI** — tape + inbox + packet. Chat is not the product.
 
 Export this diagram to PNG for the Devpost “Architecture Diagram” field.

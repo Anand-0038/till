@@ -20,6 +20,11 @@ Show the tape print:
 - auditor AUTO on VOID-19 and NS-7
 - auditor ASK on VAR-TILL and REF-4412
 
+When the optional provider is enabled, the tape also shows the real Strands auditor calling
+`read_close_state` and recording a bounded model review. The policy still produces the two ask
+cards and remains the authority for every cash action. If the provider is unavailable, show the
+explicit deterministic fallback rather than hiding the boundary.
+
 Deposit stays unfiled.
 
 ## 2:10–3:20 — Decision

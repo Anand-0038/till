@@ -31,10 +31,17 @@ Open http://127.0.0.1:8000
 No AWS or model key is required for the judge path. The graph is real Strands
 (`GraphBuilder`, `MultiAgentBase`, `BeforeNodeCallEvent`, interrupt/resume).
 
+When `TILL_GEMINI_API_KEY` is configured, the auditor also runs a real Strands `Agent` through
+Gemini's OpenAI-compatible endpoint. That agent calls the read-only `read_close_state` tool and
+adds a bounded owner-review summary to the tape. The deterministic policy still creates and
+validates the actual ask cards; a provider timeout or failure falls back to the same safe local
+close path.
+
 ### Optional Gemini explanation
 
 After the crew has produced a tape, **Explain with Gemini** can generate a short, read-only
-explanation of the observed close:
+explanation of the observed close. The same optional key also enables the model-backed Strands
+auditor review described above:
 
 ```bash
 export TILL_GEMINI_API_KEY="<your key>"
@@ -91,10 +98,11 @@ note, carried into the tape and local packet when the next reviewer needs the re
 
 The seeded Tuesday is synthetic and runs in one process. Till does not connect to a real POS,
 move real money, or claim a hosted deployment. The code proves the complete policy and human-
-decision flow locally; live POS integration, multi-user persistence, and AgentCore deployment are
-separate follow-up paths. Optional Gemini narration is explanatory only and is not part of the
-policy path. The audit export is a local download from the same process, not durable cloud
-storage. The scenario does not claim measured customer time savings or user-study results.
+decision flow locally; the optional Strands model reviewer performs bounded owner-facing work but
+does not decide cash policy. Live POS integration, multi-user persistence, and AgentCore
+deployment are separate follow-up paths. Optional Gemini narration is explanatory only. The audit
+export is a local download from the same process, not durable cloud storage. The scenario does
+not claim measured customer time savings or user-study results.
 
 ## Restart later
 

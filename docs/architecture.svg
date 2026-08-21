@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1500" height="940" viewBox="0 0 1500 940" role="img" aria-labelledby="title desc">
   <title id="title">Till architecture: a Strands Agents night-close crew</title>
-  <desc id="desc">A browser night board calls a FastAPI control plane, which runs a Strands GraphBuilder with cashier, auditor, owner gate, and clerk nodes over a synthetic shop fixture. The clerk produces a locked deposit packet only after owner decisions.</desc>
+  <desc id="desc">A browser night board calls a FastAPI control plane, which runs a Strands GraphBuilder with cashier, auditor, owner gate, and clerk nodes over a synthetic shop fixture. When configured, the auditor also runs a bounded Strands Agent review through a read-only tool; deterministic policy still controls every cash action. The clerk produces a locked deposit packet only after owner decisions.</desc>
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0" stop-color="#20160f"/>
@@ -59,7 +59,7 @@
 
   <rect x="420" y="164" width="1000" height="540" rx="14" fill="#2c2116" stroke="#8c7449" stroke-width="2"/>
   <text x="456" y="207" class="section">STRANDS AGENTS SDK / GRAPHBUILDER</text>
-  <text x="456" y="235" class="tiny">Deterministic MultiAgentBase nodes · real BeforeNodeCallEvent interrupt · no model key required</text>
+  <text x="456" y="235" class="tiny">MultiAgentBase graph + optional Strands Agent review · real BeforeNodeCallEvent · safe no-key fallback</text>
 
   <rect x="456" y="274" width="205" height="188" rx="10" fill="#443322" stroke="#b0894e" stroke-width="2"/>
   <text x="482" y="314" class="node-title">CASHIER</text>
@@ -72,8 +72,8 @@
   <text x="730" y="314" class="node-title">AUDITOR</text>
   <text x="730" y="345" class="node-copy">skills/auditor</text>
   <text x="730" y="372" class="node-code">audit_exceptions</text>
-  <text x="730" y="405" class="node-copy">Applies policy table.</text>
-  <text x="730" y="432" class="node-copy">Auto or ask.</text>
+  <text x="730" y="405" class="node-copy">Read-only model review + policy.</text>
+  <text x="730" y="432" class="node-copy">Auto or ask; policy wins.</text>
 
   <rect x="952" y="274" width="205" height="188" rx="10" fill="url(#red)" stroke="#ee8a82" stroke-width="2"/>
   <text x="978" y="314" class="node-title">OWNER GATE</text>
