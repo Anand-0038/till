@@ -80,7 +80,7 @@ Policy lives only in `till/policy.py`.
 
 ## Last verified
 
-25 tests passed (`test_close`, `test_http`, `test_narration`, `test_skills`). The graph interrupt is named
+28 tests passed (`test_close`, `test_http`, `test_model_review`, `test_narration`, `test_skills`). The graph interrupt is named
 `owner-gate`; the tape records each role's tool. HTTP close then decide locks
 `DEP-2026-08-11` / `1228.00`. Invalid or incomplete decisions return `422` without partial
 owner mutation. Optional owner rationale notes are normalized, persisted into the packet, and

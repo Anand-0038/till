@@ -109,8 +109,8 @@ def _agent() -> Agent:
 def run_model_review() -> str | None:
     """Run the real Strands model/tool loop when configured.
 
-    Provider errors are returned to the deterministic caller as ``None``. The
-    core close must remain usable when the optional provider is unavailable.
+    Provider errors are returned as an explicit fallback tape message. The core
+    close must remain usable when the optional provider is unavailable.
     """
 
     if not enabled():
@@ -131,5 +131,5 @@ def run_model_review() -> str | None:
         return FALLBACK_MESSAGE
     text = " ".join(str(result).split()).strip()
     if not text:
-        return None
+        return FALLBACK_MESSAGE
     return text[:1000]
