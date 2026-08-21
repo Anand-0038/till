@@ -51,6 +51,7 @@ body {
 }
 
 html {
+  font-size: clamp(15px, 1vw + 12px, 18px);
   background: var(--wood-2);
 }
 
@@ -184,7 +185,7 @@ button:disabled {
 
 .mast-kicker {
   margin: 0;
-  font-size: 0.68rem;
+  font-size: clamp(0.82rem, 0.7rem + 0.55vw, 0.98rem);
   font-weight: 600;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -206,7 +207,7 @@ button:disabled {
 
 .shop-meta {
   color: var(--ink-soft);
-  font-size: 0.92rem;
+  font-size: 1rem;
 }
 
 .mast-when {
@@ -219,7 +220,7 @@ button:disabled {
 
 #night-date {
   font-family: var(--mono);
-  font-size: 0.82rem;
+  font-size: 0.95rem;
   font-weight: 500;
   letter-spacing: 0.04em;
 }
@@ -233,7 +234,7 @@ button:disabled {
   background: var(--led-bg);
   color: var(--led);
   font-family: var(--mono);
-  font-size: 0.86rem;
+  font-size: 0.98rem;
   font-weight: 600;
   letter-spacing: 0.18em;
   text-shadow: 0 0 8px rgba(74, 222, 128, 0.55);
@@ -309,7 +310,7 @@ button:disabled {
 .toolbar-note {
   flex: 1 1 16rem;
   color: var(--paper-dim);
-  font-size: 0.92rem;
+  font-size: 1rem;
 }
 
 .btn {
@@ -320,8 +321,8 @@ button:disabled {
   padding: 0.55rem 1rem;
   border: 1px solid transparent;
   font-family: var(--stamp-font);
-  font-size: 0.95rem;
-  letter-spacing: 0.08em;
+  font-size: 1rem;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 
@@ -473,7 +474,7 @@ button:disabled {
 }
 
 .tape-bezel h2 {
-  font-size: 0.92rem;
+  font-size: 1.08rem;
   letter-spacing: 0.14em;
 }
 
@@ -528,7 +529,7 @@ button:disabled {
     );
   color: var(--tape-ink);
   font-family: var(--mono);
-  font-size: 0.78rem;
+  font-size: 0.96rem;
   line-height: 1.45;
   box-shadow: inset 0 0 0 1px #d7c79a;
 }
@@ -634,13 +635,13 @@ button:disabled {
 .policy-note {
   margin: 0.2rem 0 0.7rem;
   color: var(--ink-soft);
-  font-size: 0.82rem;
+  font-size: 1rem;
 }
 
 .policy table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.82rem;
+  font-size: 0.95rem;
 }
 
 .policy th,
@@ -653,7 +654,7 @@ button:disabled {
 
 .policy th {
   font-family: var(--stamp-font);
-  font-size: 0.75rem;
+  font-size: 0.86rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--kraft-3);
@@ -690,12 +691,12 @@ button:disabled {
 
 .inbox-sub {
   color: #3b6074;
-  font-size: 0.86rem;
+  font-size: 1rem;
 }
 
 .inbox-count {
   font-family: var(--mono);
-  font-size: 0.78rem;
+  font-size: 0.92rem;
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -734,7 +735,7 @@ button:disabled {
   justify-content: space-between;
   gap: 0.5rem;
   font-family: var(--mono);
-  font-size: 0.74rem;
+  font-size: 0.88rem;
   letter-spacing: 0.04em;
   text-transform: uppercase;
   color: #3b6074;
@@ -743,7 +744,7 @@ button:disabled {
 .card h3 {
   margin: 0.28rem 0 0.15rem;
   font-family: var(--stamp-font);
-  font-size: 1.05rem;
+  font-size: 1.18rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
@@ -751,13 +752,13 @@ button:disabled {
 .card-amt {
   font-family: var(--mono);
   font-weight: 600;
-  font-size: 1rem;
+  font-size: 1.08rem;
 }
 
 .card-why {
   margin: 0.2rem 0 0.65rem;
   color: #245066;
-  font-size: 0.9rem;
+  font-size: 1rem;
 }
 
 .card-actions {
@@ -773,7 +774,7 @@ button:disabled {
   color: var(--ncr-ink);
   border: 1px solid #5d8496;
   font-family: var(--stamp-font);
-  font-size: 0.82rem;
+  font-size: 0.96rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -814,7 +815,7 @@ button:disabled {
 .empty-card {
   padding: 1.1rem 0.4rem;
   color: #3b6074;
-  font-size: 0.95rem;
+  font-size: 1.08rem;
 }
 
 .inbox-foot {
@@ -831,7 +832,7 @@ button:disabled {
 .inbox-hint {
   flex: 1 1 12rem;
   color: #3b6074;
-  font-size: 0.86rem;
+  font-size: 0.94rem;
 }
 
 .packet {
@@ -903,7 +904,7 @@ button:disabled {
 .packet-export-note {
   margin: 0;
   color: var(--ink-soft);
-  font-size: 0.75rem;
+  font-size: 0.95rem;
 }
 
 .btn-export {
@@ -912,7 +913,8 @@ button:disabled {
   background: rgba(255, 248, 225, 0.6);
   color: var(--ink);
   border-color: #8a6a36;
-  font-size: 0.78rem;
+  font-size: 0.95rem;
+  min-height: 40px;
 }
 
 .btn-export:hover:not(:disabled) {
@@ -921,7 +923,7 @@ button:disabled {
 }
 
 .packet-kicker {
-  font-size: 0.7rem;
+  font-size: 0.85rem;
   font-weight: 600;
   letter-spacing: 0.16em;
   text-transform: uppercase;
@@ -953,7 +955,7 @@ button:disabled {
 }
 
 .packet-grid dt {
-  font-size: 0.7rem;
+  font-size: 0.85rem;
   font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -963,14 +965,14 @@ button:disabled {
 .packet-grid dd {
   margin: 0.1rem 0 0;
   font-family: var(--mono);
-  font-size: 0.92rem;
+  font-size: 1rem;
 }
 
 .packet-notes {
   margin: 0.7rem 0 0;
   padding: 0;
   list-style: none;
-  font-size: 0.88rem;
+  font-size: 1rem;
 }
 
 .packet-notes li {
@@ -991,7 +993,8 @@ button:disabled {
   border: 2px solid var(--held);
   color: var(--held);
   font-family: var(--stamp-font);
-  letter-spacing: 0.14em;
+  letter-spacing: 0.12em;
+  font-size: 0.88rem;
   text-transform: uppercase;
 }
 
@@ -1038,6 +1041,10 @@ button:disabled {
     right: 0.7rem;
     top: auto;
     bottom: 0.55rem;
+  }
+
+  .mast h1 {
+    font-size: clamp(2rem, 7vw, 3rem);
   }
 }
 
@@ -1096,7 +1103,25 @@ button:disabled {
     letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--kraft-3);
-    font-size: 0.72rem;
+    font-size: 0.86rem;
+  }
+}
+
+@media (max-width: 500px) {
+  .policy td {
+    font-size: 1rem;
+  }
+
+  .inbox-count,
+  .packet-grid dt,
+  .packet-export-note,
+  .packet-band {
+    font-size: 0.95rem;
+  }
+
+  .toolbar,
+  .inbox-foot {
+    gap: 0.7rem;
   }
 }
 
