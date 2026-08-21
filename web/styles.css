@@ -761,6 +761,46 @@ button:disabled {
   font-size: 1rem;
 }
 
+.card-note {
+  display: grid;
+  gap: 0.22rem;
+  margin-top: 0.68rem;
+  color: #3b6074;
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.card-note em {
+  font-family: var(--sans);
+  font-style: normal;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.card-note input {
+  width: 100%;
+  min-height: 38px;
+  padding: 0.42rem 0.55rem;
+  background: #f9fdff;
+  color: var(--ncr-ink);
+  border: 1px solid #8aafc0;
+  font: 0.9rem var(--sans);
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.card-note input::placeholder {
+  color: #6d8a99;
+}
+
+.card-note-readonly {
+  margin-top: 0.68rem;
+  color: #245066;
+  font-size: 0.92rem;
+}
+
 .card-actions {
   display: flex;
   flex-wrap: wrap;

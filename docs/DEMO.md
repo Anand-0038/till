@@ -29,6 +29,10 @@ Inbox: two cards.
 1. VAR-TILL −$12.50 — **accept**
 2. REF-4412 $89 refund — **approve**
 
+Optionally add a short owner note to a card, such as `Recount reviewed by Dana.` The note is
+carried into the owner tape and the local packet export; leaving it blank keeps the main demo
+fast.
+
 Say: the crew already did the safe work. These two need a human.
 
 ## 3:20–4:10 — Outcome

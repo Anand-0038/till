@@ -35,6 +35,7 @@ class ExceptionItem:
     time_hhmm: str | None = None
     receipt: bool = False
     decision: str | None = None
+    decision_note: str | None = None
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)

@@ -9,13 +9,13 @@ from till.store import night
 from till.tools import apply_decisions
 
 
-def _as_decisions(response: Any) -> list[dict[str, str]]:
+def _as_decisions(response: Any) -> list[dict[str, Any]]:
     if isinstance(response, dict) and "decisions" in response:
         response = response["decisions"]
     if not isinstance(response, list):
         raise TypeError("owner gate expects a list of {id, action}")
 
-    decisions: list[dict[str, str]] = []
+    decisions: list[dict[str, Any]] = []
     for row in response:
         if not isinstance(row, dict):
             raise TypeError("owner gate decisions must be objects")
@@ -25,7 +25,16 @@ def _as_decisions(response: Any) -> list[dict[str, str]]:
             raise ValueError("owner gate decision id must be a non-empty string")
         if not isinstance(action, str) or not action.strip():
             raise ValueError("owner gate decision action must be a non-empty string")
-        decisions.append({"id": card_id.strip(), "action": action.strip().lower()})
+        note = row.get("note")
+        if note is not None and not isinstance(note, str):
+            raise TypeError("owner gate decision note must be a string")
+        decisions.append(
+            {
+                "id": card_id.strip(),
+                "action": action.strip().lower(),
+                **({"note": note} if note is not None else {}),
+            }
+        )
     return decisions
 
 

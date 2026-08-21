@@ -15,6 +15,7 @@ app = FastAPI(title="Till")
 class Decision(BaseModel):
     id: str = Field(min_length=1)
     action: str = Field(min_length=1)
+    note: str | None = Field(default=None, max_length=240)
 
 
 class DecideBody(BaseModel):

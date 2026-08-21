@@ -18,11 +18,15 @@ App: `till.main:app`
 ```json
 {
   "decisions": [
-    {"id": "VAR-TILL", "action": "accept"},
+    {"id": "VAR-TILL", "action": "accept", "note": "Owner reviewed the recount."},
     {"id": "REF-4412", "action": "approve"}
   ]
 }
 ```
+
+`note` is optional and is limited to 240 characters. Till normalizes it to a single line and
+keeps it with the decision in the tape, exception record, packet, and local JSON export so the
+owner's stamp is explainable on the next review.
 
 409 if no close is in progress or the night is not waiting.
 
@@ -51,7 +55,8 @@ cards, missing cards, and unsupported actions return `422` without changing the 
 - `tape[]` — `{agent, tool, text}`
 - `open_asks[]` and alias `cards[]` — open ask exceptions
 - `exceptions[]` — all exceptions
-- `packet` — null until filed; then `{id, cash_to_drop, lines, decisions}`
+- `packet` — null until filed; then `{id, cash_to_drop, lines, decisions}`; each decision can
+  include the owner's optional `note`
 - `run` — present after close/decide: `{status, interrupts?}`
 
 ## Status values

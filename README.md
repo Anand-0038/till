@@ -64,7 +64,8 @@ See the [architecture source](docs/architecture.md) and the rendered
 
 The board starts with no open asks. After the crew runs, the owner sees only the two exceptions
 that policy cannot close; the clerk is visibly blocked. After both decisions are stamped, the
-same graph resumes and files `DEP-2026-08-11`.
+same graph resumes and files `DEP-2026-08-11`. Each card also accepts an optional short owner
+note, carried into the tape and local packet when the next reviewer needs the reason for a stamp.
 
 ![Till waiting at the owner gate](docs/till-waiting.png)
 

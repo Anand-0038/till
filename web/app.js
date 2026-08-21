@@ -82,6 +82,7 @@
     printQueue: [],
     printing: false,
     printTimer: null,
+    notes: new Map(),
     retry: loadNight,
   };
 
@@ -185,6 +186,7 @@
       status: str(card.status || card.state || "open"),
       actions: cardActions({ ...card, kind }),
       decision: str(card.decision || card.action || card.resolution || ""),
+      decisionNote: str(card.decision_note || card.decisionNote || ""),
     };
   }
 
@@ -284,6 +286,11 @@
         notes: asArray(packetRaw.notes || packetRaw.lines).map((n) =>
           typeof n === "string" ? n : str(n.text || n.note || n.detail)
         ),
+        decisions: asArray(packetRaw.decisions).map((d) => ({
+          id: str(d.id),
+          action: str(d.action),
+          note: str(d.note),
+        })),
         filed_by: str(packetRaw.filed_by || packetRaw.clerk || ""),
       },
       audit: asArray(raw.audit || raw.audit_log || raw.trace).map((a) => ({
@@ -678,6 +685,15 @@
         : picked
           ? `<span class="card-stamp">${escapeHtml(picked)}</span>`
           : "";
+      const noteValue = state.notes.get(card.id) || card.decisionNote || "";
+      const noteControl = openCard
+        ? `<label class="card-note">
+            <span>Owner note <em>optional</em></span>
+            <input type="text" data-note-id="${escapeHtml(card.id)}" maxlength="240" value="${escapeHtml(noteValue)}" placeholder="Why this stamp?" autocomplete="off" />
+          </label>`
+        : card.decisionNote
+          ? `<p class="card-note-readonly"><strong>Owner note</strong> ${escapeHtml(card.decisionNote)}</p>`
+          : "";
 
       art.innerHTML = `
         <div class="card-top">
@@ -688,6 +704,7 @@
         ${amt ? `<p class="card-amt">${escapeHtml(amt)}</p>` : ""}
         <p class="card-why">${escapeHtml(why)}</p>
         ${actions}
+        ${noteControl}
         ${stamp}`;
       ui.cards.appendChild(art);
     });
@@ -754,6 +771,9 @@
         else if (e.kind) notes.push(`${e.kind}${e.mode ? ` · ${e.mode}` : ""}`);
       });
       night.packet.notes.forEach((n) => n && notes.push(n));
+      night.packet.decisions.forEach((decision) => {
+        if (decision.note) notes.push(`${decision.id} · owner note · ${decision.note}`);
+      });
       night.audit.forEach((a) => {
         const bits = [a.agent, a.tool, a.decision, a.detail].filter(Boolean);
         if (bits.length) notes.push(bits.join(" · "));
@@ -821,6 +841,9 @@
     [...state.picks.keys()].forEach((id) => {
       if (!openIds.has(id)) state.picks.delete(id);
     });
+    [...state.notes.keys()].forEach((id) => {
+      if (!openIds.has(id)) state.notes.delete(id);
+    });
 
     renderChrome(night);
     renderCrew(night);
@@ -877,7 +900,14 @@
     if (state.busy || !canStamp()) return;
     const decisions = state.night.cards
       .filter(cardOpen)
-      .map((c) => ({ id: c.id, action: state.picks.get(c.id) }))
+      .map((c) => {
+        const note = (state.notes.get(c.id) || "").trim();
+        return {
+          id: c.id,
+          action: state.picks.get(c.id),
+          ...(note ? { note } : {}),
+        };
+      })
       .filter((d) => d.action);
     if (!decisions.length) return;
 
@@ -913,6 +943,7 @@
         body: JSON.stringify({}),
       });
       state.picks.clear();
+      state.notes.clear();
       resetTape();
       const data = await api("/api/night");
       applyNight(data, { instant: true });
@@ -970,6 +1001,14 @@
     else state.picks.set(id, action);
     renderCards(state.night);
     renderChrome(state.night);
+  });
+
+  ui.cards.addEventListener("input", (ev) => {
+    const input = ev.target.closest("[data-note-id]");
+    if (!input || !ui.cards.contains(input)) return;
+    const id = input.getAttribute("data-note-id");
+    if (!id) return;
+    state.notes.set(id, input.value);
   });
 
   if (window.location.protocol === "file:") {

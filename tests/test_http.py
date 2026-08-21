@@ -92,6 +92,66 @@ def test_http_export_requires_a_locked_packet_and_returns_a_local_audit():
     assert "no close in progress" in after_reset.json()["detail"]
 
 
+def test_http_owner_notes_round_trip_into_packet_and_export():
+    client = TestClient(app)
+    client.post("/api/reset")
+    client.post("/api/close")
+
+    decided = client.post(
+        "/api/decide",
+        json={
+            "decisions": [
+                {
+                    "id": "VAR-TILL",
+                    "action": "accept",
+                    "note": "  Recount reviewed by Dana.\n  ",
+                },
+                {"id": "REF-4412", "action": "approve"},
+            ]
+        },
+    )
+
+    assert decided.status_code == 200
+    decided_body = decided.json()
+    assert decided_body["packet"]["decisions"] == [
+        {"id": "VAR-TILL", "action": "accept", "note": "Recount reviewed by Dana."},
+        {"id": "REF-4412", "action": "approve"},
+    ]
+    assert decided_body["exceptions"][0]["decision_note"] == "Recount reviewed by Dana."
+    assert "note: Recount reviewed by Dana." in next(
+        line["text"]
+        for line in decided_body["tape"]
+        if line["tool"] == "apply_decisions" and line["agent"] == "owner"
+    )
+
+    exported = client.get("/api/export")
+    assert exported.status_code == 200
+    assert exported.json()["night"]["packet"]["decisions"][0]["note"] == (
+        "Recount reviewed by Dana."
+    )
+
+
+def test_http_rejects_oversized_owner_note_before_resuming_graph():
+    client = TestClient(app, raise_server_exceptions=False)
+    client.post("/api/reset")
+    client.post("/api/close")
+
+    response = client.post(
+        "/api/decide",
+        json={
+            "decisions": [
+                {"id": "VAR-TILL", "action": "accept", "note": "x" * 241},
+                {"id": "REF-4412", "action": "approve"},
+            ]
+        },
+    )
+
+    assert response.status_code == 422
+    snapshot = client.get("/api/night").json()
+    assert snapshot["status"] == "waiting"
+    assert not any(line["agent"] == "owner" for line in snapshot["tape"])
+
+
 def test_http_rejects_invalid_decisions_without_server_error():
     client = TestClient(app, raise_server_exceptions=False)
     client.post("/api/reset")

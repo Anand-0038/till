@@ -54,13 +54,25 @@ def test_deposit_after_owner_stamps():
     audit_exceptions()
     apply_decisions(
         [
-            {"id": "VAR-TILL", "action": "accept"},
+            {
+                "id": "VAR-TILL",
+                "action": "accept",
+                "note": "  Owner reviewed the recount.  ",
+            },
             {"id": "REF-4412", "action": "approve"},
         ]
     )
     packet = file_deposit()
     assert packet["id"] == "DEP-2026-08-11"
     assert packet["cash_to_drop"] == 1228.00
+    assert packet["decisions"] == [
+        {"id": "VAR-TILL", "action": "accept", "note": "Owner reviewed the recount."},
+        {"id": "REF-4412", "action": "approve"},
+    ]
+    assert night().exceptions[0].decision_note == "Owner reviewed the recount."
+    assert any(
+        "note: Owner reviewed the recount." in line.text for line in night().tape
+    )
     assert packet["lines"][2:] == [
         "variance   -12.50  accept",
         "refunds    REF-4412 approve",
@@ -107,6 +119,32 @@ def test_invalid_owner_decisions_are_atomic():
         raise AssertionError("unsupported action must be rejected")
     except ValueError as exc:
         assert "accepts approve, deny" in str(exc)
+
+    assert {item.id for item in night().open_asks()} == {"VAR-TILL", "REF-4412"}
+    assert len(night().tape) == before_tape
+
+
+def test_owner_notes_reject_non_strings_and_oversized_values_atomically():
+    reset()
+    count_drawer()
+    audit_exceptions()
+    before_tape = len(night().tape)
+
+    with pytest.raises(TypeError, match="decision note must be a string"):
+        apply_decisions(
+            [
+                {"id": "VAR-TILL", "action": "accept", "note": 12},
+                {"id": "REF-4412", "action": "approve"},
+            ]
+        )
+
+    with pytest.raises(ValueError, match="240 characters"):
+        apply_decisions(
+            [
+                {"id": "VAR-TILL", "action": "accept", "note": "x" * 241},
+                {"id": "REF-4412", "action": "approve"},
+            ]
+        )
 
     assert {item.id for item in night().open_asks()} == {"VAR-TILL", "REF-4412"}
     assert len(night().tape) == before_tape
