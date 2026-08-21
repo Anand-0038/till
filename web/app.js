@@ -81,6 +81,7 @@
     busy: false,
     printQueue: [],
     printing: false,
+    printTimer: null,
     retry: loadNight,
   };
 
@@ -581,7 +582,8 @@
     setLamp(true);
     appendTapeLine(next, true);
     const delay = reduceMotion() ? 0 : 320;
-    window.setTimeout(() => {
+    state.printTimer = window.setTimeout(() => {
+      state.printTimer = null;
       state.printing = false;
       pumpPrint();
     }, delay);
@@ -608,6 +610,10 @@
   }
 
   function resetTape() {
+    if (state.printTimer !== null) {
+      window.clearTimeout(state.printTimer);
+      state.printTimer = null;
+    }
     state.printed.clear();
     state.printQueue = [];
     state.printing = false;
@@ -855,8 +861,8 @@
     } catch (err) {
       showError(err.message, runClose);
       try {
-        const data = await api("/api/night");
-        applyNight(data);
+        const recovered = applyNight(await api("/api/night"));
+        if (["ask", "locked"].includes(recovered.status)) clearError();
       } catch {
         ui.statusLed.dataset.status = "error";
         ui.statusText.textContent = "ERR";
@@ -886,7 +892,8 @@
     } catch (err) {
       showError(err.message, stampDecisions);
       try {
-        applyNight(await api("/api/night"));
+        const recovered = applyNight(await api("/api/night"));
+        if (recovered.status === "locked") clearError();
       } catch {
         /* keep current board */
       }

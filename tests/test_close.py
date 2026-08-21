@@ -1,4 +1,5 @@
 import asyncio
+from concurrent.futures import ThreadPoolExecutor
 
 import pytest
 
@@ -143,6 +144,65 @@ def test_strands_graph_interrupt_and_resume():
     assert "cash 1240.50" in tender_line["text"]
     assert "card 3180.20" in tender_line["text"]
     assert "store-credit 95.00" in tender_line["text"]
+
+
+def test_concurrent_close_requests_do_not_interleave_the_global_register():
+    reset_night()
+    with ThreadPoolExecutor(max_workers=6) as pool:
+        results = list(pool.map(lambda _: start_close(), range(6)))
+
+    assert {result["status"] for result in results} == {"waiting"}
+    assert all(result["run"]["status"] == "interrupted" for result in results)
+    assert len(night().tape) == 6
+    assert [line.tool for line in night().tape] == [
+        "count_drawer",
+        "classify_tenders",
+        "audit_exceptions",
+        "audit_exceptions",
+        "audit_exceptions",
+        "audit_exceptions",
+    ]
+
+
+def test_concurrent_owner_responses_allow_only_one_resume():
+    reset_night()
+    start_close()
+    decisions = [
+        {"id": "VAR-TILL", "action": "accept"},
+        {"id": "REF-4412", "action": "approve"},
+    ]
+
+    def resume_once():
+        try:
+            return ("ok", resume_close(decisions))
+        except RuntimeError as exc:
+            return ("error", str(exc))
+
+    with ThreadPoolExecutor(max_workers=2) as pool:
+        results = list(pool.map(lambda _: resume_once(), range(2)))
+
+    assert [kind for kind, _ in results].count("ok") == 1
+    assert [kind for kind, _ in results].count("error") == 1
+    assert any("not waiting" in detail for kind, detail in results if kind == "error")
+    assert night().status == "locked"
+    assert sum(line.tool == "file_deposit" for line in night().tape) == 1
+
+
+def test_failed_graph_start_clears_the_previous_engine_state(monkeypatch):
+    reset_night()
+
+    def fail_build():
+        raise RuntimeError("graph construction failed")
+
+    monkeypatch.setattr("till.engine.build_graph", fail_build)
+
+    with pytest.raises(RuntimeError, match="graph construction failed"):
+        start_close()
+
+    with pytest.raises(RuntimeError, match="no close in progress"):
+        resume_close([])
+    assert night().status == "open"
+    assert night().tape == []
 
 
 def test_graph_nodes_carry_their_loaded_skill_contracts():
