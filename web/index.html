@@ -55,15 +55,17 @@
       </header>
 
       <section class="toolbar" aria-label="Night actions">
-        <button type="button" id="btn-close" class="btn btn-close">
-          Run night close
-        </button>
+        <div class="toolbar-actions">
+          <button type="button" id="btn-close" class="btn btn-close">
+            Run night close
+          </button>
+          <button type="button" id="btn-reset" class="btn btn-ghost">
+            Reset night
+          </button>
+        </div>
         <p class="toolbar-note" id="toolbar-note">
           Strands crew: cashier counts. Auditor applies policy. You stamp the asks. Clerk files.
         </p>
-        <button type="button" id="btn-reset" class="btn btn-ghost">
-          Reset night
-        </button>
       </section>
 
       <ol class="crew" id="crew" aria-label="Crew timeline">
@@ -182,16 +184,18 @@
         <section class="inbox" id="inbox" aria-labelledby="inbox-heading">
           <header class="inbox-head">
             <div>
+              <p class="inbox-kicker">Human gate · policy stopped here</p>
               <h2 id="inbox-heading">Decision Inbox</h2>
-              <p class="inbox-sub">Owner only. Safe work already filed.</p>
+              <p class="inbox-sub">Safe work is done. Stamp the exceptions.</p>
             </div>
             <p class="inbox-count" id="inbox-count">0 open</p>
           </header>
           <div id="cards" class="cards"></div>
           <div class="inbox-foot">
-            <p class="inbox-hint" id="inbox-hint">
+            <p class="inbox-hint" id="inbox-hint" role="status" aria-live="polite">
               Nothing to stamp until the crew hits an ask.
             </p>
+            <p class="inbox-progress" id="inbox-progress">—</p>
             <button type="button" id="btn-decide" class="btn btn-stamp" disabled>
               Stamp decisions
             </button>

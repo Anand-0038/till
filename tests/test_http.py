@@ -39,6 +39,9 @@ def test_http_board_is_not_chat():
     assert "Register tape" in body
     assert "Deposit packet" in body
     assert "Export audit" in body
+    assert "Human gate" in body
+    assert "inbox-progress" in body
+    assert 'aria-live="polite"' in body
     assert "<textarea" not in body.lower()
     health = client.get("/health")
     assert health.status_code == 200

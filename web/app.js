@@ -44,6 +44,7 @@
     tapeEmpty: $("#tape-empty"),
     cards: $("#cards"),
     inboxCount: $("#inbox-count"),
+    inboxProgress: $("#inbox-progress"),
     inboxHint: $("#inbox-hint"),
     packet: $("#packet"),
     packetId: $("#packet-id"),
@@ -639,7 +640,13 @@
   function renderCards(night) {
     const cards = night.cards;
     const open = cards.filter(cardOpen);
+    const selected = open.filter((card) => state.picks.has(card.id)).length;
     ui.inboxCount.textContent = `${open.length} open`;
+    ui.inboxProgress.textContent = open.length
+      ? selected === open.length
+        ? "Ready to stamp"
+        : `${selected} / ${open.length} selected`
+      : "No active decisions";
 
     if (!cards.length) {
       const msg =
@@ -662,7 +669,7 @@
       const openCard = cardOpen(card);
       const picked = state.picks.get(card.id) || "";
       const art = document.createElement("article");
-      art.className = "card" + (openCard ? "" : " is-closed");
+      art.className = "card" + (openCard ? "" : " is-closed") + (picked ? " is-picked" : "");
       art.dataset.id = card.id;
 
       const why =
@@ -688,8 +695,8 @@
       const noteValue = state.notes.get(card.id) || card.decisionNote || "";
       const noteControl = openCard
         ? `<label class="card-note">
-            <span>Owner note <em>optional</em></span>
-            <input type="text" data-note-id="${escapeHtml(card.id)}" maxlength="240" value="${escapeHtml(noteValue)}" placeholder="Why this stamp?" autocomplete="off" />
+            <span>Owner note <em>optional · 240 max</em></span>
+            <input type="text" data-note-id="${escapeHtml(card.id)}" maxlength="240" value="${escapeHtml(noteValue)}" placeholder="Why this stamp?" autocomplete="off" aria-label="Optional owner note for ${escapeHtml(card.id)}" />
           </label>`
         : card.decisionNote
           ? `<p class="card-note-readonly"><strong>Owner note</strong> ${escapeHtml(card.decisionNote)}</p>`

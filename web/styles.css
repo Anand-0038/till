@@ -307,6 +307,13 @@ button:disabled {
   padding: 0.7rem 0.15rem;
 }
 
+.toolbar-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  flex: 0 0 auto;
+}
+
 .toolbar-note {
   flex: 1 1 16rem;
   color: var(--paper-dim);
@@ -674,6 +681,13 @@ button:disabled {
     var(--shadow);
 }
 
+@media (min-width: 861px) {
+  .inbox {
+    position: sticky;
+    top: 1rem;
+  }
+}
+
 .inbox-head {
   display: flex;
   justify-content: space-between;
@@ -682,6 +696,16 @@ button:disabled {
   margin-bottom: 0.75rem;
   padding-bottom: 0.55rem;
   border-bottom: 2px solid var(--ncr-rule);
+}
+
+.inbox-kicker {
+  margin-bottom: 0.14rem;
+  color: #5e7d8d;
+  font-family: var(--mono);
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
 }
 
 .inbox h2 {
@@ -703,6 +727,17 @@ button:disabled {
   color: var(--stamp-deep);
 }
 
+.inbox-progress {
+  flex: 0 0 auto;
+  align-self: center;
+  color: #3b6074;
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
 .cards {
   display: grid;
   gap: 0.7rem;
@@ -714,12 +749,14 @@ button:disabled {
   padding: 0.7rem 0.75rem 0.75rem;
   background: #eef6fa;
   border: 1px solid #8aafc0;
+  border-left: 4px solid #8aafc0;
   box-shadow: 0 1px 0 #fff;
   overflow: hidden;
+  transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
 }
 
 .card::before {
-  content: "COPY";
+  content: "OWNER COPY";
   position: absolute;
   right: 0.4rem;
   top: 0.15rem;
@@ -728,6 +765,13 @@ button:disabled {
   letter-spacing: 0.12em;
   color: rgba(36, 89, 122, 0.09);
   pointer-events: none;
+}
+
+.card.is-picked {
+  border-color: var(--carbon);
+  border-left-color: var(--stamp);
+  box-shadow: 0 0 0 2px rgba(36, 89, 122, 0.16), 0 1px 0 #fff;
+  transform: translateX(2px);
 }
 
 .card-top {
@@ -779,6 +823,12 @@ button:disabled {
   text-transform: none;
 }
 
+.card-note > span {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
 .card-note input {
   width: 100%;
   min-height: 38px;
@@ -789,6 +839,13 @@ button:disabled {
   font: 0.9rem var(--sans);
   letter-spacing: 0;
   text-transform: none;
+  box-shadow: inset 0 1px 2px rgba(22, 58, 82, 0.08);
+  transition: border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.card-note input:focus {
+  border-color: var(--carbon);
+  box-shadow: 0 0 0 3px rgba(36, 89, 122, 0.14), inset 0 1px 2px rgba(22, 58, 82, 0.08);
 }
 
 .card-note input::placeholder {
@@ -1106,11 +1163,19 @@ button:disabled {
     align-items: stretch;
   }
 
+  .toolbar-actions {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, auto);
+  }
+
   .btn-close,
-  .btn-ghost,
   .btn-stamp,
   .btn-export {
     width: 100%;
+  }
+
+  .toolbar-actions .btn-ghost {
+    width: auto;
   }
 
   .packet-top {
@@ -1163,6 +1228,10 @@ button:disabled {
   .inbox-foot {
     gap: 0.7rem;
   }
+
+  .inbox-progress {
+    align-self: flex-start;
+  }
 }
 
 @media (max-width: 400px) {
@@ -1179,6 +1248,14 @@ button:disabled {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .card {
+    transition: none;
+  }
+
+  .card.is-picked {
+    transform: none;
+  }
+
   .tape-line.is-new,
   .print-lamp.on,
   .led[data-status="running"] .led-dot {

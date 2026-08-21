@@ -10,7 +10,8 @@ Local demo is built and tested. Submission kit for Devpost is not.
 - FastAPI: `/health`, `/api/night`, `/api/export`, `/api/close`, `/api/decide`, `/api/reset`, static board at `/`
 - Locked close can be exported through `/api/export` or the board's **Export audit** control as a
   local JSON artifact; export is rejected before the packet is locked
-- Board: Run night close, Decision Inbox, register tape, deposit packet. Not a chat home.
+- Board: Run night close, Decision Inbox, register tape, deposit packet, and optional owner
+  rationale notes that travel into the local audit packet. Not a chat home.
 - Judge assets: rendered architecture diagram, waiting-state screenshot, locked-state screenshot,
   and originality/attribution note
 - Apache-2.0 license
@@ -21,10 +22,12 @@ Local demo is built and tested. Submission kit for Devpost is not.
 ## Last test run
 
 ```
-16 passed
+22 passed
 ```
 
-Graph close pauses on `VAR-TILL` + `REF-4412`, packet is null. Decide accept + approve locks `DEP-2026-08-11` with cash-to-drop `1228.00`.
+Graph close pauses on `VAR-TILL` + `REF-4412`, packet is null. Decide accept + approve locks
+`DEP-2026-08-11` with cash-to-drop `1228.00`; an optional owner note is preserved in the tape,
+packet, and local JSON export.
 
 ## Not done (needed to actually submit / score higher)
 
