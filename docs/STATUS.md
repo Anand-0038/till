@@ -12,6 +12,8 @@ Local demo is built and tested. Submission kit for Devpost is not.
   local JSON artifact; export is rejected before the packet is locked
 - Board: Run night close, Decision Inbox, register tape, deposit packet, and optional owner
   rationale notes that travel into the local audit packet. Not a chat home.
+- Optional Gemini explanation: a real provider call can summarize the observed tape and decision
+  state without entering the deterministic cash-policy path; missing credentials fail closed.
 - Judge assets: rendered architecture diagram, waiting-state screenshot, locked-state screenshot,
   and originality/attribution note
 - Apache-2.0 license
@@ -39,7 +41,7 @@ See [WIN-CHECKLIST.md](WIN-CHECKLIST.md).
 - AWS Builder ID on the submission form
 - $50 credits request by **11 Sep 2026 12:00 PT**
 - Optional but scoring: live URL, AgentCore deploy, up to 3 builder.aws posts (+0.6)
-- OpenAI/Bedrock narration of nodes (optional; close must stay mock-safe)
+- AWS/Bedrock narration or AgentCore deployment (optional; close must stay mock-safe)
 
 ## Do not reopen
 

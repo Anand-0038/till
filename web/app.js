@@ -34,6 +34,7 @@
     lockStamp: $("#lock-stamp"),
     close: $("#btn-close"),
     reset: $("#btn-reset"),
+    narrate: $("#btn-narrate"),
     decide: $("#btn-decide"),
     export: $("#btn-export"),
     note: $("#toolbar-note"),
@@ -52,6 +53,8 @@
     packetNotes: $("#packet-notes"),
     packetBand: $("#packet-band"),
     packetExportNote: $("#packet-export-note"),
+    narration: $("#narration"),
+    narrationOutput: $("#narration-output"),
     policyBody: $("#policy-body"),
   };
 
@@ -84,6 +87,7 @@
     printing: false,
     printTimer: null,
     notes: new Map(),
+    narrating: false,
     retry: loadNight,
   };
 
@@ -411,6 +415,7 @@
     ui.close.disabled = busy || closeBlocked();
     ui.reset.disabled = busy;
     ui.decide.disabled = busy || !canStamp();
+    ui.narrate.disabled = busy || !state.night.tape.length || state.narrating;
     ui.export.disabled = busy || state.night.status !== "locked";
     if (busy) {
       ui.close.setAttribute("aria-busy", "true");
@@ -809,6 +814,15 @@
     }
   }
 
+  function renderNarration(night) {
+    const hasRun = night.tape.length > 0 || night.status !== "open";
+    ui.narration.hidden = !hasRun;
+    ui.narrate.disabled = state.busy || !hasRun || state.narrating;
+    if (!hasRun) {
+      ui.narrationOutput.textContent = "Run the crew first, then ask for an explanation.";
+    }
+  }
+
   function renderChrome(night) {
     const when = formatDate(night);
     ui.shopName.textContent = night.shop;
@@ -857,6 +871,7 @@
     renderPolicy(night);
     renderCards(night);
     renderPacket(night);
+    renderNarration(night);
     enqueueTape(night, opts.instant);
     state.hydrated = true;
     return night;
@@ -989,8 +1004,31 @@
     }
   }
 
+  async function narrateClose() {
+    if (state.busy || state.narrating || !state.night.tape.length) return;
+    clearError();
+    state.narrating = true;
+    ui.narrate.disabled = true;
+    ui.narrate.setAttribute("aria-busy", "true");
+    ui.narrationOutput.textContent = "Gemini is reading the observed close trace…";
+    try {
+      const data = await api("/api/narrate", {
+        method: "POST",
+        body: JSON.stringify({}),
+      });
+      ui.narrationOutput.textContent = data.narration || "No explanation was returned.";
+    } catch (err) {
+      ui.narrationOutput.textContent = `Optional narration unavailable. ${err.message}`;
+    } finally {
+      state.narrating = false;
+      ui.narrate.removeAttribute("aria-busy");
+      ui.narrate.disabled = state.busy || !state.night.tape.length;
+    }
+  }
+
   ui.close.addEventListener("click", runClose);
   ui.reset.addEventListener("click", resetNight);
+  ui.narrate.addEventListener("click", narrateClose);
   ui.decide.addEventListener("click", stampDecisions);
   ui.export.addEventListener("click", exportAudit);
   ui.retry.addEventListener("click", () => {

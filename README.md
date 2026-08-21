@@ -31,6 +31,22 @@ Open http://127.0.0.1:8000
 No AWS or model key is required for the judge path. The graph is real Strands
 (`GraphBuilder`, `MultiAgentBase`, `BeforeNodeCallEvent`, interrupt/resume).
 
+### Optional Gemini explanation
+
+After the crew has produced a tape, **Explain with Gemini** can generate a short, read-only
+explanation of the observed close:
+
+```bash
+export TILL_GEMINI_API_KEY="<your key>"
+export TILL_GEMINI_MODEL="gemini-2.5-flash"
+uvicorn till.main:app --reload --port 8000
+```
+
+Gemini receives only bounded local close context. It cannot count the drawer, choose an owner
+action, or file a packet. If the key is absent or the provider fails, the deterministic close
+remains usable and the UI labels narration as unavailable. No credential is required by, or
+stored in, the repository.
+
 ```bash
 pytest -q
 ```
@@ -75,10 +91,10 @@ note, carried into the tape and local packet when the next reviewer needs the re
 
 The seeded Tuesday is synthetic and runs in one process. Till does not connect to a real POS,
 move real money, or claim a hosted deployment. The code proves the complete policy and human-
-decision flow locally; live POS integration, multi-user persistence, model narration, and
-AgentCore deployment are separate follow-up paths. The audit export is a local download from the
-same process, not durable cloud storage. The scenario does not claim measured customer time
-savings or user-study results.
+decision flow locally; live POS integration, multi-user persistence, and AgentCore deployment are
+separate follow-up paths. Optional Gemini narration is explanatory only and is not part of the
+policy path. The audit export is a local download from the same process, not durable cloud
+storage. The scenario does not claim measured customer time savings or user-study results.
 
 ## Restart later
 

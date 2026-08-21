@@ -34,7 +34,8 @@ Open http://127.0.0.1:8000
 pytest tests/test_close.py tests/test_http.py tests/test_skills.py -q
 ```
 
-No AWS or OpenAI key required.
+No key is required for the deterministic close. Optional Gemini narration can be enabled with
+`TILL_GEMINI_API_KEY`; it receives bounded observed close context and cannot affect policy.
 
 ## File map
 
@@ -79,7 +80,7 @@ Policy lives only in `till/policy.py`.
 
 ## Last verified
 
-22 tests passed (`test_close`, `test_http`, `test_skills`). The graph interrupt is named
+25 tests passed (`test_close`, `test_http`, `test_narration`, `test_skills`). The graph interrupt is named
 `owner-gate`; the tape records each role's tool. HTTP close then decide locks
 `DEP-2026-08-11` / `1228.00`. Invalid or incomplete decisions return `422` without partial
 owner mutation. Optional owner rationale notes are normalized, persisted into the packet, and

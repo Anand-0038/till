@@ -6,6 +6,11 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
 from till.engine import export_close, reset_night, resume_close, snapshot, start_close
+from till.narration import (
+    NarrationProviderError,
+    NarrationUnavailable,
+    generate_narration,
+)
 
 WEB = Path(__file__).resolve().parents[1] / "web"
 
@@ -65,6 +70,25 @@ def api_decide(body: DecideBody) -> dict:
 @app.post("/api/reset")
 def api_reset() -> dict:
     return reset_night()
+
+
+@app.post("/api/narrate")
+def api_narrate() -> dict[str, str]:
+    """Ask the optional model to explain observed state, never to decide policy."""
+
+    night = snapshot()
+    if not night.get("tape"):
+        raise HTTPException(
+            status_code=409,
+            detail="run the close before requesting an optional explanation",
+        )
+
+    try:
+        return generate_narration(night)
+    except NarrationUnavailable as exc:
+        raise HTTPException(status_code=503, detail=str(exc)) from exc
+    except NarrationProviderError as exc:
+        raise HTTPException(status_code=502, detail=str(exc)) from exc
 
 
 if WEB.exists():

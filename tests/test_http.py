@@ -39,6 +39,8 @@ def test_http_board_is_not_chat():
     assert "Register tape" in body
     assert "Deposit packet" in body
     assert "Export audit" in body
+    assert "Explain with Gemini" in body
+    assert "deterministic policy remains authoritative" in body
     assert "Human gate" in body
     assert "inbox-progress" in body
     assert 'aria-live="polite"' in body

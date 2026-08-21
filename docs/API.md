@@ -12,6 +12,7 @@ App: `till.main:app`
 | POST | `/api/close` | **Resets** the seeded Tuesday, runs the graph until interrupt or lock |
 | POST | `/api/decide` | Resume the open interrupt. Body below. |
 | POST | `/api/reset` | Clear graph + restore fixture. Night is `open`. |
+| POST | `/api/narrate` | Optional Gemini explanation of the observed close; never changes policy or packet state. |
 
 ## Decide body
 
