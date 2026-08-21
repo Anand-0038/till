@@ -16,6 +16,7 @@ from strands import Agent, tool
 from strands.models.openai import OpenAIModel
 from strands.types.exceptions import (
     ContextWindowOverflowException,
+    EventLoopException,
     ModelThrottledException,
     ProviderTokenCountError,
 )
@@ -119,6 +120,7 @@ def run_model_review() -> str | None:
         result = _agent()("Review the current register close for the owner.")
     except (
         ContextWindowOverflowException,
+        EventLoopException,
         ModelThrottledException,
         OSError,
         openai.OpenAIError,

@@ -1,3 +1,5 @@
+from strands.types.exceptions import EventLoopException
+
 from till import model_review
 from till.store import night, reset
 
@@ -43,7 +45,7 @@ def test_model_review_provider_failure_returns_explicit_fallback(monkeypatch):
             pass
 
         def __call__(self, prompt):
-            raise RuntimeError("provider unavailable")
+            raise EventLoopException(RuntimeError("provider unavailable"))
 
     monkeypatch.setenv("TILL_GEMINI_API_KEY", "test-only-provider-value")
     monkeypatch.setattr(model_review, "Agent", FailingAgent)
