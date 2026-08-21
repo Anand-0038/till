@@ -71,6 +71,7 @@ class ShopNight:
     sales_count: int
     expected_cash: float
     counted_cash: float | None
+    counted_cash_input: float
     variance: float | None
     tenders: list[Tender]
     exceptions: list[ExceptionItem]

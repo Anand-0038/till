@@ -44,7 +44,8 @@ def test_http_board_is_not_chat():
     assert "Human gate" in body
     assert "inbox-progress" in body
     assert 'aria-live="polite"' in body
-    assert "<textarea" not in body.lower()
+    assert "Use a different close packet" in body
+    assert "POS-neutral JSON packet" in body
     health = client.get("/health")
     assert health.status_code == 200
     assert health.json()["ok"] == "till"
@@ -57,6 +58,116 @@ def test_http_initial_board_has_no_open_asks():
     assert snapshot["status"] == "open"
     assert snapshot["open_asks"] == []
     assert snapshot["cards"] == []
+
+
+def test_http_runs_a_user_supplied_close_packet_through_the_same_policy_graph():
+    client = TestClient(app)
+    response = client.post(
+        "/api/close",
+        json={
+            "scenario": {
+                "shop": "Northstar Bike & Repair",
+                "owner": "Priya Shah",
+                "date": "2026-08-21",
+                "register": "COUNTER-2",
+                "sales_count": 12,
+                "expected_cash": 500,
+                "counted_cash": 487.25,
+                "tenders": [
+                    {"method": "cash", "amount": 500, "txn_count": 7},
+                    {"method": "card", "amount": 910, "txn_count": 5},
+                ],
+                "exceptions": [
+                    {
+                        "id": "REF-204",
+                        "kind": "refund",
+                        "amount": 40,
+                        "reason": "Tube returned with receipt",
+                        "receipt": True,
+                    }
+                ],
+            }
+        },
+    )
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["shop"] == "Northstar Bike & Repair"
+    assert body["owner"] == "Priya Shah"
+    assert body["date"] == "2026-08-21"
+    assert body["drawer"]["counted"] == 487.25
+    assert {card["id"] for card in body["open_asks"]} == {"VAR-CLOSE"}
+    assert any("REF-204" in line["text"] for line in body["tape"])
+
+    decided = client.post(
+        "/api/decide",
+        json={"decisions": [{"id": "VAR-CLOSE", "action": "accept"}]},
+    )
+    assert decided.status_code == 200
+    assert decided.json()["packet"]["id"] == "DEP-2026-08-21"
+    assert decided.json()["packet"]["cash_to_drop"] == 487.25
+
+
+def test_http_rejects_malformed_close_packet_before_starting_the_graph():
+    client = TestClient(app, raise_server_exceptions=False)
+    client.post("/api/reset")
+    response = client.post(
+        "/api/close",
+        json={
+            "scenario": {
+                "shop": "Northstar Bike & Repair",
+                "owner": "Priya Shah",
+                "date": "21-08-2026",
+                "register": "COUNTER-2",
+                "sales_count": 12,
+                "expected_cash": 500,
+                "counted_cash": 487.25,
+                "tenders": [{"method": "cash", "amount": 500, "txn_count": 7}],
+            }
+        },
+    )
+
+    assert response.status_code == 422
+    assert client.get("/api/night").json()["status"] == "open"
+
+
+def test_http_rejects_duplicate_exception_ids_without_mutating_the_register():
+    client = TestClient(app, raise_server_exceptions=False)
+    client.post("/api/reset")
+    response = client.post(
+        "/api/close",
+        json={
+            "scenario": {
+                "shop": "Northstar Bike & Repair",
+                "owner": "Priya Shah",
+                "date": "2026-08-21",
+                "register": "COUNTER-2",
+                "sales_count": 12,
+                "expected_cash": 500,
+                "counted_cash": 487.25,
+                "tenders": [{"method": "cash", "amount": 500, "txn_count": 7}],
+                "exceptions": [
+                    {
+                        "id": "REF-204",
+                        "kind": "refund",
+                        "amount": 40,
+                        "reason": "one",
+                        "receipt": True,
+                    },
+                    {
+                        "id": "REF-204",
+                        "kind": "refund",
+                        "amount": 20,
+                        "reason": "two",
+                        "receipt": True,
+                    },
+                ],
+            }
+        },
+    )
+
+    assert response.status_code == 422
+    assert client.get("/api/night").json()["status"] == "open"
 
 
 def test_http_export_requires_a_locked_packet_and_returns_a_local_audit():

@@ -36,10 +36,10 @@ def _payload(result) -> dict[str, Any]:
     return shop
 
 
-def start_close() -> dict[str, Any]:
+def start_close(scenario: dict[str, Any] | None = None) -> dict[str, Any]:
     global _graph, _last_result
     with _ENGINE_LOCK:
-        reset()
+        reset(scenario)
         _graph = None
         _last_result = None
         try:
@@ -86,10 +86,10 @@ def export_close() -> dict[str, Any]:
         }
 
 
-def reset_night() -> dict[str, Any]:
+def reset_night(scenario: dict[str, Any] | None = None) -> dict[str, Any]:
     global _graph, _last_result
     with _ENGINE_LOCK:
         _graph = None
         _last_result = None
-        reset()
+        reset(scenario)
         return snapshot()

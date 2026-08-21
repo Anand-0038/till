@@ -14,6 +14,8 @@ Local demo is built and tested. Submission kit for Devpost is not.
   local JSON artifact; export is rejected before the packet is locked
 - Board: Run night close, Decision Inbox, register tape, deposit packet, and optional owner
   rationale notes that travel into the local audit packet. Not a chat home.
+- User-supplied POS-neutral close packets: validated `POST /api/close` input and compact board
+  editor run through the same policy graph; malformed packets fail before graph execution.
 - Optional Gemini explanation: a real provider call can summarize the observed tape and decision
   state without entering the deterministic cash-policy path; missing credentials fail closed.
 - Judge assets: rendered architecture diagram, waiting-state screenshot, locked-state screenshot,
@@ -31,7 +33,8 @@ Local demo is built and tested. Submission kit for Devpost is not.
 
 Graph close pauses on `VAR-TILL` + `REF-4412`, packet is null. Decide accept + approve locks
 `DEP-2026-08-11` with cash-to-drop `1228.00`; an optional owner note is preserved in the tape,
-packet, and local JSON export.
+packet, and local JSON export. A separate API regression runs a Northstar Bike & Repair packet
+through the same graph and locks `DEP-2026-08-21` after its derived variance is stamped.
 
 ## Not done (needed to actually submit / score higher)
 

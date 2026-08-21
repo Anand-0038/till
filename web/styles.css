@@ -320,6 +320,76 @@ button:disabled {
   font-size: 1rem;
 }
 
+.scenario-editor {
+  margin: 0.15rem 0 1rem;
+  border: 1px solid #665238;
+  background: rgba(22, 17, 12, 0.56);
+}
+
+.scenario-editor summary {
+  cursor: pointer;
+  padding: 0.7rem 0.85rem;
+  color: var(--paper);
+  font-family: var(--stamp-font);
+  font-size: 0.92rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.scenario-inner {
+  display: grid;
+  gap: 0.65rem;
+  padding: 0 0.85rem 0.85rem;
+}
+
+.scenario-copy,
+.scenario-status {
+  color: var(--paper-dim);
+  font-size: 0.92rem;
+}
+
+.scenario-label {
+  color: var(--kraft-2);
+  font-family: var(--stamp-font);
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+#scenario-json {
+  width: 100%;
+  min-height: 8rem;
+  padding: 0.75rem;
+  border: 1px solid #665238;
+  background: #0f0c09;
+  color: var(--paper);
+  font-family: var(--mono-font);
+  font-size: 0.84rem;
+  line-height: 1.45;
+  resize: vertical;
+}
+
+#scenario-json:focus {
+  outline: 2px solid var(--kraft-2);
+  outline-offset: 2px;
+}
+
+.scenario-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.btn-scenario {
+  background: #21475a;
+  border-color: #7ab1c5;
+  color: #eefaff;
+}
+
+.btn-scenario:hover:not(:disabled) {
+  background: #2b5d73;
+}
+
 .btn {
   display: inline-flex;
   align-items: center;
@@ -1251,6 +1321,15 @@ button:disabled {
 
   .toolbar-actions .btn-narrate {
     grid-column: 1 / -1;
+    width: 100%;
+  }
+
+  .scenario-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .scenario-actions .btn {
     width: 100%;
   }
 

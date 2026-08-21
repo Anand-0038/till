@@ -1,9 +1,11 @@
+from datetime import date as Date
 from pathlib import Path
+from typing import Literal
 
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 from till.engine import export_close, reset_night, resume_close, snapshot, start_close
 from till.narration import (
@@ -25,6 +27,53 @@ class Decision(BaseModel):
 
 class DecideBody(BaseModel):
     decisions: list[Decision] = Field(min_length=1)
+
+
+class TenderInput(BaseModel):
+    method: str = Field(min_length=1, max_length=40)
+    amount: float = Field(ge=0, le=100_000_000)
+    txn_count: int = Field(ge=0, le=1_000_000)
+
+
+class ExceptionInput(BaseModel):
+    id: str = Field(min_length=1, max_length=80)
+    kind: Literal["refund", "void", "no-sale"]
+    amount: float = Field(default=0, ge=0, le=100_000_000)
+    reason: str = Field(min_length=1, max_length=240)
+    manager_code: bool = False
+    time_hhmm: str | None = Field(default=None, pattern=r"^([01]\d|2[0-3]):[0-5]\d$")
+    receipt: bool = False
+
+
+class CloseScenario(BaseModel):
+    shop: str = Field(min_length=1, max_length=120)
+    owner: str = Field(min_length=1, max_length=120)
+    date: Date
+    register_name: str = Field(
+        alias="register",
+        serialization_alias="register",
+        min_length=1,
+        max_length=80,
+    )
+    sales_count: int = Field(ge=0, le=10_000_000)
+    expected_cash: float = Field(ge=0, le=100_000_000)
+    counted_cash: float = Field(ge=0, le=100_000_000)
+    tenders: list[TenderInput] = Field(min_length=1, max_length=20)
+    exceptions: list[ExceptionInput] = Field(default_factory=list, max_length=100)
+    variance_id: str = Field(default="VAR-CLOSE", min_length=1, max_length=80)
+
+    @model_validator(mode="after")
+    def validate_exception_ids(self) -> "CloseScenario":
+        ids = [item.id for item in self.exceptions]
+        if len(ids) != len(set(ids)):
+            raise ValueError("exception ids must be unique")
+        if self.variance_id in ids:
+            raise ValueError("variance_id must differ from exception ids")
+        return self
+
+
+class CloseBody(BaseModel):
+    scenario: CloseScenario | None = None
 
 
 @app.get("/health")
@@ -53,8 +102,14 @@ def api_export() -> JSONResponse:
 
 
 @app.post("/api/close")
-def api_close() -> dict:
-    return start_close()
+def api_close(body: CloseBody | None = None) -> dict:
+    scenario = (
+        body.scenario.model_dump(by_alias=True) if body and body.scenario else None
+    )
+    try:
+        return start_close(scenario)
+    except (TypeError, ValueError) as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
 
 
 @app.post("/api/decide")

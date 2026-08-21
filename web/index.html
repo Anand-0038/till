@@ -77,6 +77,31 @@
         </p>
       </section>
 
+      <details class="scenario-editor" id="scenario-editor">
+        <summary>Use a different close packet</summary>
+        <div class="scenario-inner">
+          <p class="scenario-copy">
+            Paste a POS-neutral JSON packet to run the same crew and policy on another night.
+            Till validates it at the API boundary; it does not store or upload the packet.
+          </p>
+          <label class="scenario-label" for="scenario-json">Close packet JSON</label>
+          <textarea
+            id="scenario-json"
+            rows="8"
+            spellcheck="false"
+            placeholder='{"shop":"Northstar Bike & Repair","owner":"Priya Shah","date":"2026-08-21","register":"COUNTER-2","sales_count":12,"expected_cash":500,"counted_cash":487.25,"tenders":[{"method":"cash","amount":500,"txn_count":7}],"exceptions":[]}'
+          ></textarea>
+          <div class="scenario-actions">
+            <button type="button" id="btn-scenario-example" class="btn btn-ghost">Load example</button>
+            <button type="button" id="btn-scenario-use" class="btn btn-scenario">Use packet on next run</button>
+            <button type="button" id="btn-scenario-clear" class="btn btn-ghost">Use seeded close</button>
+          </div>
+          <p class="scenario-status" id="scenario-status" role="status" aria-live="polite">
+            Seeded close is active. No packet has been uploaded.
+          </p>
+        </div>
+      </details>
+
       <ol class="crew" id="crew" aria-label="Crew timeline">
         <li data-role="cashier" data-state="wait">
           <span class="crew-dot" aria-hidden="true"></span>

@@ -39,9 +39,14 @@ Seeded Tuesday. 47 sales. One $89 refund. Drawer short $12.50. One late no-sale.
 4. Clerk files packet `DEP-2026-08-11`. Night status is **locked**.
 5. Audit names every agent, tool, and decision.
 
+The same board can also run a user-supplied POS-neutral close packet. This is an input path,
+not a fake alternate workflow: the packet is validated, the variance is derived from its cash
+values, and the same Strands graph, policy table, owner gate, clerk, and local export handle it.
+
 ## Surfaces
 
 - Night board (not a chat box)
+- Close packet editor for another local/POS-neutral night
 - Crew timeline
 - Decision Inbox
 - Deposit packet (the artifact)

@@ -35,6 +35,11 @@
     close: $("#btn-close"),
     reset: $("#btn-reset"),
     narrate: $("#btn-narrate"),
+    scenarioJson: $("#scenario-json"),
+    scenarioExample: $("#btn-scenario-example"),
+    scenarioUse: $("#btn-scenario-use"),
+    scenarioClear: $("#btn-scenario-clear"),
+    scenarioStatus: $("#scenario-status"),
     decide: $("#btn-decide"),
     export: $("#btn-export"),
     note: $("#toolbar-note"),
@@ -88,7 +93,31 @@
     printTimer: null,
     notes: new Map(),
     narrating: false,
+    scenario: null,
     retry: loadNight,
+  };
+
+  const EXAMPLE_SCENARIO = {
+    shop: "Northstar Bike & Repair",
+    owner: "Priya Shah",
+    date: "2026-08-21",
+    register: "COUNTER-2",
+    sales_count: 12,
+    expected_cash: 500,
+    counted_cash: 487.25,
+    tenders: [
+      { method: "cash", amount: 500, txn_count: 7 },
+      { method: "card", amount: 910, txn_count: 5 },
+    ],
+    exceptions: [
+      {
+        id: "REF-204",
+        kind: "refund",
+        amount: 40,
+        reason: "Tube returned with receipt",
+        receipt: true,
+      },
+    ],
   };
 
   function emptyNight() {
@@ -414,6 +443,9 @@
     state.busy = busy;
     ui.close.disabled = busy || closeBlocked();
     ui.reset.disabled = busy;
+    ui.scenarioExample.disabled = busy;
+    ui.scenarioUse.disabled = busy;
+    ui.scenarioClear.disabled = busy;
     ui.decide.disabled = busy || !canStamp();
     ui.narrate.disabled = busy || !state.night.tape.length || state.narrating;
     ui.export.disabled = busy || state.night.status !== "locked";
@@ -850,6 +882,7 @@
       if (locked) ui.note.textContent = "Packet filed. Night locked.";
       else if (openAsks) ui.note.textContent = "Crew stopped. Asks need a stamp.";
       else if (night.status === "running") ui.note.textContent = "Crew is on the floor.";
+      else if (state.scenario) ui.note.textContent = "Custom packet ready. Run the crew when you are ready.";
       else ui.note.textContent = "Strands crew: cashier counts. Auditor applies policy. You stamp the asks. Clerk files.";
     }
   }
@@ -897,7 +930,7 @@
     try {
       const data = await api("/api/close", {
         method: "POST",
-        body: JSON.stringify({}),
+        body: JSON.stringify(state.scenario ? { scenario: state.scenario } : {}),
       });
       const night = applyNight(looksLikeNight(data) ? data : await api("/api/night"));
       if (night.status !== "locked" && night.status !== "ask") {
@@ -964,6 +997,9 @@
         method: "POST",
         body: JSON.stringify({}),
       });
+      state.scenario = null;
+      ui.scenarioJson.value = "";
+      ui.scenarioStatus.textContent = "Seeded close is active. No packet has been uploaded.";
       state.picks.clear();
       state.notes.clear();
       resetTape();
@@ -1034,6 +1070,33 @@
   ui.retry.addEventListener("click", () => {
     clearError();
     state.retry();
+  });
+
+  ui.scenarioExample.addEventListener("click", () => {
+    ui.scenarioJson.value = JSON.stringify(EXAMPLE_SCENARIO, null, 2);
+    ui.scenarioStatus.textContent = "Example loaded locally. Choose ‘Use packet on next run’ to validate it.";
+  });
+
+  ui.scenarioUse.addEventListener("click", () => {
+    try {
+      const parsed = JSON.parse(ui.scenarioJson.value);
+      if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+        throw new Error("packet must be a JSON object");
+      }
+      state.scenario = parsed;
+      ui.scenarioStatus.textContent = "Custom packet ready. It will be validated when you run the close.";
+      renderChrome(state.night);
+    } catch (err) {
+      state.scenario = null;
+      ui.scenarioStatus.textContent = `Packet not selected: ${err.message}`;
+    }
+  });
+
+  ui.scenarioClear.addEventListener("click", () => {
+    state.scenario = null;
+    ui.scenarioJson.value = "";
+    ui.scenarioStatus.textContent = "Seeded close is active. No packet has been uploaded.";
+    renderChrome(state.night);
   });
 
   ui.cards.addEventListener("click", (ev) => {

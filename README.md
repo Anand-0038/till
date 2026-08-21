@@ -28,6 +28,11 @@ Open http://127.0.0.1:8000
 4. Packet `DEP-2026-08-11` files. Night stamps **LOCKED**.
 5. Click **Export audit** to save the locked close as a local JSON record. It never uploads.
 
+The board also accepts another close packet through **Use a different close packet**. Paste a
+POS-neutral JSON object with shop metadata, expected/count cash, tenders, and refund/void/no-sale
+exceptions. The same Strands graph and policy table process it; malformed packets are rejected
+before the graph starts. The packet remains process-local and is never uploaded.
+
 No AWS or model key is required for the judge path. The graph is real Strands
 (`GraphBuilder`, `MultiAgentBase`, `BeforeNodeCallEvent`, interrupt/resume).
 
@@ -96,13 +101,13 @@ note, carried into the tape and local packet when the next reviewer needs the re
 
 ## What is intentionally bounded
 
-The seeded Tuesday is synthetic and runs in one process. Till does not connect to a real POS,
-move real money, or claim a hosted deployment. The code proves the complete policy and human-
-decision flow locally; the optional Strands model reviewer performs bounded owner-facing work but
-does not decide cash policy. Live POS integration, multi-user persistence, and AgentCore
-deployment are separate follow-up paths. Optional Gemini narration is explanatory only. The audit
-export is a local download from the same process, not durable cloud storage. The scenario does
-not claim measured customer time savings or user-study results.
+The seeded Tuesday and user-supplied packets are synthetic/process-local inputs. Till does not
+connect to a real POS, move real money, or claim a hosted deployment. The code proves the
+complete policy and human-decision flow locally; the optional Strands model reviewer performs
+bounded owner-facing work but does not decide cash policy. Live POS adapters, multi-user
+persistence, and AgentCore deployment are separate follow-up paths. Optional Gemini narration is
+explanatory only. The audit export is a local download from the same process, not durable cloud
+storage. The scenario does not claim measured customer time savings or user-study results.
 
 ## Restart later
 

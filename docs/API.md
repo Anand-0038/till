@@ -9,10 +9,34 @@ App: `till.main:app`
 | GET | `/` | Night board (`web/index.html`) |
 | GET | `/api/night` | Current `ShopNight.to_dict()` |
 | GET | `/api/export` | Download the locked close as a local JSON audit artifact |
-| POST | `/api/close` | **Resets** the seeded Tuesday, runs the graph until interrupt or lock |
+| POST | `/api/close` | Resets process state, runs the seeded packet or supplied close packet until interrupt or lock |
 | POST | `/api/decide` | Resume the open interrupt. Body below. |
 | POST | `/api/reset` | Clear graph + restore fixture. Night is `open`. |
 | POST | `/api/narrate` | Optional Gemini explanation of the observed close; never changes policy or packet state. |
+
+## Close body
+
+`POST /api/close` may receive no body to run the seeded packet, or a validated POS-neutral packet:
+
+```json
+{
+  "scenario": {
+    "shop": "Northstar Bike & Repair",
+    "owner": "Priya Shah",
+    "date": "2026-08-21",
+    "register": "COUNTER-2",
+    "sales_count": 12,
+    "expected_cash": 500,
+    "counted_cash": 487.25,
+    "tenders": [{"method": "cash", "amount": 500, "txn_count": 7}],
+    "exceptions": []
+  }
+}
+```
+
+`variance` is derived from expected and counted cash. Additional exceptions support `refund`,
+`void`, and `no-sale`, with optional `receipt`, `manager_code`, and `time_hhmm` fields. Invalid
+packets return `422` before the graph or process state starts.
 
 ## Decide body
 

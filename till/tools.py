@@ -33,7 +33,7 @@ def record_model_review(text: str, *, fallback: bool = False) -> None:
 
 def count_drawer() -> dict[str, Any]:
     shop = night()
-    shop.counted_cash = money(1228.00)
+    shop.counted_cash = money(shop.counted_cash_input)
     shop.variance = money(shop.counted_cash - shop.expected_cash)
     shop.status = "counting"
     _tape(
